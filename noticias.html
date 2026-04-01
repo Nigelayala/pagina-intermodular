@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intranet — Noticias</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 13px;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.18s;
+      display: flex;
+      flex-direction: column;
+    }
+    .news-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+    .news-card-accent {
+      height: 5px;
+    }
+    .nc-urgente   { background: var(--danger); }
+    .nc-seguridad { background: var(--warning); }
+    .nc-rrhh      { background: var(--success); }
+    .nc-sistemas  { background: var(--accent); }
+    .nc-direccion { background: #8b5cf6; }
+    .nc-general   { background: var(--info); }
+
+    .news-card-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .news-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .news-card-date { font-size: 11px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+    .news-card-title { font-size: 15px; font-weight: 600; color: var(--text-1); line-height: 1.4; }
+    .news-card-desc  { font-size: 13px; color: var(--text-2); line-height: 1.6; flex: 1; }
+    .news-card-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Featured big card */
+    .news-card.featured {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      align-items: stretch;
+    }
+    .news-card.featured .news-card-accent {
+      width: 6px;
+      height: auto;
+      border-radius: 0;
+    }
+    .news-card.featured .news-card-body { flex-direction: row; align-items: center; gap: 20px; }
+    .news-card.featured .news-card-title { font-size: 17px; }
+    .news-card.featured .featured-badge {
+      flex-shrink: 0;
+      background: var(--danger);
+      color: #fff;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .news-card.featured .featured-content { flex: 1; }
+
+    .urgente-banner {
+      background: #fff7f7;
+      border: 1px solid #fecaca;
+      border-radius: var(--radius-lg);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .urgente-icon {
+      width: 32px; height: 32px;
+      background: var(--danger);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+<script src="nav.js"></script>
+
+<div class="main">
+  <header class="topbar">
+    <span class="page-title">Noticias</span>
+    <div class="topbar-search">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Buscar noticias...">
+    </div>
+    <button class="btn btn-primary btn-sm">+ Nueva noticia</button>
+  </header>
+
+  <div class="content">
+    <div class="page-header">
+      <h1>Tablón de noticias</h1>
+      <p>Comunicados, avisos y novedades corporativas</p>
+    </div>
+
+    <!-- Urgente banner -->
+    <div class="urgente-banner">
+      <div class="urgente-icon">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2"><path d="M10 2l8 14H2L10 2z"/><path d="M10 9v4M10 15h.01" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="font-500" style="font-size:14px;">Aviso urgente: mantenimiento programado</div>
+        <div class="text-sm text-muted">El servidor principal estará en mantenimiento hoy de 22:00 a 02:00. Guarda tu trabajo con antelación.</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterNews('todos', this)">Todos</button>
+      <button class="filter-btn" onclick="filterNews('urgente', this)">🔴 Urgente</button>
+      <button class="filter-btn" onclick="filterNews('sistemas', this)">Sistemas</button>
+      <button class="filter-btn" onclick="filterNews('seguridad', this)">Seguridad</button>
+      <button class="filter-btn" onclick="filterNews('rrhh', this)">RR.HH.</button>
+      <button class="filter-btn" onclick="filterNews('direccion', this)">Dirección</button>
+      <button class="filter-btn" onclick="filterNews('general', this)">General</button>
+    </div>
+
+    <!-- News grid -->
+    <div class="news-grid" id="news-grid">
+
+      <!-- Featured -->
+      <div class="news-card featured" data-cat="sistemas urgente">
+        <div class="news-card-accent nc-urgente"></div>
+        <div class="news-card-body">
+          <div class="featured-badge">🔴 Urgente</div>
+          <div class="featured-content">
+            <div class="news-card-meta">
+              <span class="badge badge-red">Sistemas</span>
+              <span class="news-card-date">HOY · 30 MAR 2026</span>
+            </div>
+            <div class="news-card-title" style="margin-top:6px;">Mantenimiento programado del servidor principal esta noche</div>
+            <div class="news-card-desc">El servidor principal (SRV-01) estará en ventana de mantenimiento desde las 22:00 hasta las 02:00 del martes. Durante ese período no estarán disponibles los servicios de dominio, carpetas compartidas ni correo interno.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="news-card" data-cat="seguridad">
+        <div class="news-card-accent nc-seguridad"></div>
+        <div class="news-card-body">
+          <div class="news-card-meta">
+            <span class="badge badge-yellow">Seguridad</span>
+            <span class="news-card-date">30 MAR 2026</span>
+          </div>
+          <div class="news-card-title">Nueva política de contraseñas a partir del 1 de abril</div>
+          <div class="news-card-desc">Desde el próximo martes todas las contraseñas deberán cumplir los nuevos requisitos: mínimo 12 caracteres, combinación de mayúsculas, números y símbolos, y caducidad cada 90 días.</div>
+        </div>
+        <div class="news-card-footer">
+          <span class="news-card-date">Publicado por: Seguridad IT</span>
+          <a href="#" class="btn btn-ghost btn-sm">Leer más</a>
+        </div>
+      </div>
+
+      <div class="news-card" data-cat="direccion">
+        <div class="news-card-accent nc-direccion"></div>
+        <div class="news-card-body">
+          <div class="news-card-meta">
+            <span class="badge" style="background:#ede9fe;color:#5b21b6;">Dirección</span>
+            <span class="news-card-date">29 MAR 2026</span>
+          </div>
+          <div class="news-card-title">Resultados Q1: superamos los objetivos de ventas</div>
+          <div class="news-card-desc">Cerramos el primer trimestre con un crecimiento del 18% sobre el objetivo marcado. La dirección agradece el esfuerzo de todos los departamentos. Se convoca reunión general el 2 de abril.</div>
+        </div>
+        <div class="news-card-footer">
+          <span class="news-card-date">Publicado por: Dirección General</span>
+          <a href="#" class="btn btn-ghost btn-sm">Leer más</a>
+        </div>
+      </div>
+
+      <div class="news-card" data-cat="rrhh">
+        <div class="news-card-accent nc-rrhh"></div>
+        <div class="news-card-body">
+          <div class="news-card-meta">
+            <span class="badge badge-green">RR.HH.</span>
+            <span class="news-card-date">28 MAR 2026</span>
+          </div>
+          <div class="news-card-title">Formulario de solicitud de vacaciones actualizado</div>
+          <div class="news-card-desc">Ya está disponible en la sección de Documentos el nuevo formulario de solicitud de vacaciones para el período estival. El plazo de solicitud finaliza el 15 de abril.</div>
+        </div>
+        <div class="news-card-footer">
+          <span class="news-card-date">Publicado por: RR.HH.</span>
+          <a href="#" class="btn btn-ghost btn-sm">Leer más</a>
+        </div>
+      </div>
+
+      <div class="news-card" data-cat="sistemas">
+        <div class="news-card-accent nc-sistemas"></div>
+        <div class="news-card-body">
+          <div class="news-card-meta">
+            <span class="badge badge-blue">Sistemas</span>
+            <span class="news-card-date">27 MAR 2026</span>
+          </div>
+          <div class="news-card-title">Actualización de drivers en equipos del departamento de Ventas</div>
+          <div class="news-card-desc">Durante la próxima semana se actualizarán los drivers y firmware de los 12 equipos del área de Ventas. El proceso se realizará fuera del horario laboral.</div>
+        </div>
+        <div class="news-card-footer">
+          <span class="news-card-date">Publicado por: Soporte IT</span>
+          <a href="#" class="btn btn-ghost btn-sm">Leer más</a>
+        </div>
+      </div>
+
+      <div class="news-card" data-cat="general">
+        <div class="news-card-accent nc-general"></div>
+        <div class="news-card-body">
+          <div class="news-card-meta">
+            <span class="badge badge-teal">General</span>
+            <span class="news-card-date">25 MAR 2026</span>
+          </div>
+          <div class="news-card-title">Bienvenida a los 3 nuevos compañeros del equipo de Operaciones</div>
+          <div class="news-card-desc">Esta semana se han incorporado tres nuevos miembros al departamento de Operaciones. Podéis encontrar su información en el directorio de empleados.</div>
+        </div>
+        <div class="news-card-footer">
+          <span class="news-card-date">Publicado por: RR.HH.</span>
+          <a href="#" class="btn btn-ghost btn-sm">Leer más</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function filterNews(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.news-card').forEach(card => {
+    const cats = card.dataset.cat || '';
+    card.style.display = (cat === 'todos' || cats.includes(cat)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

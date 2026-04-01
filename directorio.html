@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intranet — Directorio</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .dir-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: center;
+    }
+    .dir-search {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 16px;
+    }
+    .dir-search:focus-within { border-color: var(--accent); }
+    .dir-search input { border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-1); outline: none; width: 100%; }
+    .dir-search input::placeholder { color: var(--text-3); }
+
+    .dept-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0;
+    }
+    .dept-tab {
+      padding: 8px 18px;
+      border: none; background: transparent;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      color: var(--text-3); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+    }
+    .dept-tab:hover { color: var(--text-1); }
+    .dept-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .emp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .emp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      box-shadow: var(--shadow);
+      transition: all 0.18s;
+      cursor: pointer;
+    }
+    .emp-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent); }
+
+    .emp-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 600; color: #fff;
+      flex-shrink: 0;
+    }
+    .emp-name  { font-size: 14px; font-weight: 600; color: var(--text-1); }
+    .emp-cargo { font-size: 12px; color: var(--text-2); }
+    .emp-ext   { font-size: 11px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+
+    .emp-contact { display: flex; gap: 8px; margin-top: 4px; }
+    .emp-contact-btn {
+      flex: 1;
+      padding: 6px 0;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      font-size: 11px; color: var(--text-2);
+      cursor: pointer; text-align: center;
+      transition: all 0.12s;
+      text-decoration: none;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .emp-contact-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+
+    .org-section {
+      margin-bottom: 32px;
+    }
+    .org-dept-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .dept-color-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dept-name { font-size: 14px; font-weight: 600; }
+    .dept-count { font-size: 12px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+  </style>
+</head>
+<body>
+<script src="nav.js"></script>
+
+<div class="main">
+  <header class="topbar">
+    <span class="page-title">Directorio</span>
+    <div class="topbar-search">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Buscar empleado...">
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="page-header">
+      <h1>Directorio de empleados</h1>
+      <p>40 empleados · 4 departamentos</p>
+    </div>
+
+    <!-- Search & view toggle -->
+    <div class="dir-controls">
+      <div class="dir-search">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
+        <input type="text" id="emp-search" placeholder="Buscar por nombre, cargo o extensión..." oninput="searchEmps(this.value)">
+      </div>
+      <select class="form-input" style="width:180px;" onchange="filterDeptSelect(this.value)">
+        <option value="todos">Todos los dptos.</option>
+        <option value="administracion">Administración</option>
+        <option value="ventas">Ventas</option>
+        <option value="operaciones">Operaciones</option>
+        <option value="direccion">Dirección</option>
+      </select>
+    </div>
+
+    <!-- Dept tabs -->
+    <div class="dept-tabs">
+      <button class="dept-tab active" onclick="switchTab('todos', this)">Todos (40)</button>
+      <button class="dept-tab" onclick="switchTab('administracion', this)">Administración (10)</button>
+      <button class="dept-tab" onclick="switchTab('ventas', this)">Ventas (12)</button>
+      <button class="dept-tab" onclick="switchTab('operaciones', this)">Operaciones (13)</button>
+      <button class="dept-tab" onclick="switchTab('direccion', this)">Dirección (5)</button>
+    </div>
+
+    <!-- Employee grid -->
+    <div class="emp-grid" id="emp-grid">
+      <!-- Administración -->
+      <div class="emp-card" data-dept="administracion" data-name="Laura Martínez">
+        <div class="emp-avatar" style="background:#4f6ef7;">LM</div>
+        <div class="emp-name">Laura Martínez</div>
+        <div class="emp-cargo">Responsable de Administración</div>
+        <span class="badge badge-blue">Administración</span>
+        <div class="emp-ext">Ext. 101 · l.martinez@techcorp.es</div>
+        <div class="emp-contact">
+          <a class="emp-contact-btn" href="mailto:l.martinez@techcorp.es">
+            <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>
+            Email
+          </a>
+          <a class="emp-contact-btn" href="tel:+34900000101">
+            <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 2h4l2 4-2.5 1.5A11 11 0 0013.5 12L15 9.5l4 2v4a2 2 0 01-2 2A16 16 0 013 4a2 2 0 012-2z"/></svg>
+            Llamar
+          </a>
+        </div>
+      </div>
+
+      <div class="emp-card" data-dept="administracion" data-name="Carlos Ruiz">
+        <div class="emp-avatar" style="background:#8b5cf6;">CR</div>
+        <div class="emp-name">Carlos Ruiz</div>
+        <div class="emp-cargo">Contabilidad</div>
+        <span class="badge badge-blue">Administración</span>
+        <div class="emp-ext">Ext. 102 · c.ruiz@techcorp.es</div>
+        <div class="emp-contact">
+          <a class="emp-contact-btn" href="mailto:c.ruiz@techcorp.es"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>Email</a>
+          <a class="emp-contact-btn" href="tel:+34900000102"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 2h4l2 4-2.5 1.5A11 11 0 0013.5 12L15 9.5l4 2v4a2 2 0 01-2 2A16 16 0 013 4a2 2 0 012-2z"/></svg>Llamar</a>
+        </div>
+      </div>
+
+      <div class="emp-card" data-dept="administracion" data-name="Ana García">
+        <div class="emp-avatar" style="background:#06b6d4;">AG</div>
+        <div class="emp-name">Ana García</div>
+        <div class="emp-cargo">Recursos Humanos</div>
+        <span class="badge badge-blue">Administración</span>
+        <div class="emp-ext">Ext. 103 · a.garcia@techcorp.es</div>
+        <div class="emp-contact">
+          <a class="emp-contact-btn" href="mailto:a.garcia@techcorp.es"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>Email</a>
+          <a class="emp-contact-btn" href="tel:+34900000103"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 2h4l2 4-2.5 1.5A11 11 0 0013.5 12L15 9.5l4 2v4a2 2 0 01-2 2A16 16 0 013 4a2 2 0 012-2z"/></svg>Llamar</a>
+        </div>
+      </div>
+
+      <!-- Ventas -->
+      <div class="emp-card" data-dept="ventas" data-name="Miguel Torres">
+        <div class="emp-avatar" style="background:#22c55e;">MT</div>
+        <div class="emp-name">Miguel Torres</div>
+        <div class="emp-cargo">Director de Ventas</div>
+        <span class="badge badge-green">Ventas</span>
+        <div class="emp-ext">Ext. 201 · m.torres@techcorp.es</div>
+        <div class="emp-contact">
+          <a class="emp-contact-btn" href="mailto:m.torres@techcorp.es"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>Email</a>
+          <a class="emp-contact-btn" href="tel:+34900000201"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 2h4l2 4-2.5 1.5A11 11 0 0013.5 12L15 9.5l4 2v4a2 2 0 01-2 2A16 16 0 013 4a2 2 0 012-2z"/></svg>Llamar</a>
+        </div>
+      </div>
+
+      <div class="emp-card" data-dept="ventas" data-name="Sofía López">
+        <div class="emp-avatar" style="background:#f59e0b;">SL</div>
+        <div class="emp-name">Sofía López</div>
+        <div class="emp-cargo">Comercial Senior</div>
+        <span class="badge badge-green">Ventas</span>
+        <div class="emp-ext">Ext. 202 · s.lopez@techcorp.es</div>
+        <div class="emp-contact">
+          <a class="emp-contact-btn" href="mailto:s.lopez@techcorp.es"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>Email</a>
+          <a class="emp-contact-btn" href="tel:+34900000202"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 2h4l2 4-2.5 1.5A11 11 0 0013.5 12L15 9.5l4 2v4a2 2 0 01-2 2A16 16 0 013 4a2 2 0 012-2z"/></svg>Llamar</a>
+        </div>
+      </div>
+
+      <div class="emp-card" data-dept="ventas" data-name="Pablo Sánchez">
+        <div class="emp-avatar" style="background:#ef4444;">PS</div>
+        <div class="emp-name">Pablo Sánchez</div>
+        <div class="emp-cargo">Comercial</div>
+        <span class="badge badge-green">Ventas</span>
+        <div class="emp-ext">Ext. 203 · p.sanchez@techcorp.es</div>
+        <div class="emp-contact">
+          <a class="emp-contact-btn" href="mailto:p.sanchez@techcorp.es"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>Email</a>
+          <a class="emp-contact-btn" href="tel:+34900000203"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 2h4l2 4-2.5 1.5A11 11 0 0013.5 12L15 9.5l4 2v4a2 2 0 01-2 2A16 16 0 013 4a2 2 0 012-2z"/></svg>Llamar</a>
+        </div>
+      </div>
+
+      <!-- Operaciones -->
+      <div class="emp-card" data-dept="operaciones" data-name="Elena Fernández">
+        <div class="emp-avatar" style="background:#0e7490;">EF</div>
+        <div class="emp-name">Elena Fernández</div>
+        <div class="emp-cargo">Responsable Operaciones</div>
+        <span class="badge badge-teal">Operaciones</span>
+        <div class="emp-ext">Ext. 301 · e.fernandez@techcorp.es</div>
+        <div class="emp-contact">
+          <a class="emp-contact-btn" href="mailto:e.fernandez@techcorp.es"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>Email</a>
+          <a class="emp-contact-btn" href="tel:+34900000301"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 2h4l2 4-2.5 1.5A11 11 0 0013.5 12L15 9.5l4 2v4a2 2 0 01-2 2A16 16 0 013 4a2 2 0 012-2z"/></svg>Llamar</a>
+        </div>
+      </div>
+
+      <div class="emp-card" data-dept="operaciones" data-name="David Moreno">
+        <div class="emp-avatar" style="background:#7c3aed;">DM</div>
+        <div class="emp-name">David Moreno</div>
+        <div class="emp-cargo">Técnico de Sistemas</div>
+        <span class="badge badge-teal">Operaciones</span>
+        <div class="emp-ext">Ext. 302 · d.moreno@techcorp.es</div>
+        <div class="emp-contact">
+          <a class="emp-contact-btn" href="mailto:d.moreno@techcorp.es"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>Email</a>
+          <a class="emp-contact-btn" href="tel:+34900000302"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 2h4l2 4-2.5 1.5A11 11 0 0013.5 12L15 9.5l4 2v4a2 2 0 01-2 2A16 16 0 013 4a2 2 0 012-2z"/></svg>Llamar</a>
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="emp-card" data-dept="direccion" data-name="Roberto Jiménez">
+        <div class="emp-avatar" style="background:#1a1f2e;">RJ</div>
+        <div class="emp-name">Roberto Jiménez</div>
+        <div class="emp-cargo">CEO</div>
+        <span class="badge badge-gray">Dirección</span>
+        <div class="emp-ext">Ext. 001 · r.jimenez@techcorp.es</div>
+        <div class="emp-contact">
+          <a class="emp-contact-btn" href="mailto:r.jimenez@techcorp.es"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>Email</a>
+          <a class="emp-contact-btn" href="tel:+34900000001"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 2h4l2 4-2.5 1.5A11 11 0 0013.5 12L15 9.5l4 2v4a2 2 0 01-2 2A16 16 0 013 4a2 2 0 012-2z"/></svg>Llamar</a>
+        </div>
+      </div>
+
+      <div class="emp-card" data-dept="direccion" data-name="Isabel Navarro">
+        <div class="emp-avatar" style="background:#db2777;">IN</div>
+        <div class="emp-name">Isabel Navarro</div>
+        <div class="emp-cargo">Directora Financiera (CFO)</div>
+        <span class="badge badge-gray">Dirección</span>
+        <div class="emp-ext">Ext. 002 · i.navarro@techcorp.es</div>
+        <div class="emp-contact">
+          <a class="emp-contact-btn" href="mailto:i.navarro@techcorp.es"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>Email</a>
+          <a class="emp-contact-btn" href="tel:+34900000002"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 2h4l2 4-2.5 1.5A11 11 0 0013.5 12L15 9.5l4 2v4a2 2 0 01-2 2A16 16 0 013 4a2 2 0 012-2z"/></svg>Llamar</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- No results -->
+    <div id="no-results" style="display:none;text-align:center;padding:48px;color:var(--text-3);">
+      <div style="font-size:32px;margin-bottom:8px;">🔍</div>
+      <div class="font-500" style="color:var(--text-2);">No se encontraron resultados</div>
+      <div class="text-sm">Prueba con otro nombre o cargo</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(dept, btn) {
+  document.querySelectorAll('.dept-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterDept(dept);
+}
+function filterDeptSelect(dept) { filterDept(dept); }
+function filterDept(dept) {
+  let visible = 0;
+  document.querySelectorAll('.emp-card').forEach(c => {
+    const show = dept === 'todos' || c.dataset.dept === dept;
+    c.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('no-results').style.display = visible === 0 ? '' : 'none';
+}
+function searchEmps(q) {
+  const s = q.toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.emp-card').forEach(c => {
+    const name = (c.dataset.name || '').toLowerCase();
+    const text = c.textContent.toLowerCase();
+    const show = text.includes(s);
+    c.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('no-results').style.display = visible === 0 ? '' : 'none';
+}
+</script>
+</body>
+</html>

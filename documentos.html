@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intranet — Documentos</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .doc-layout { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start; }
+
+    .doc-sidebar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 80px;
+    }
+    .doc-cat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      cursor: pointer;
+      transition: background 0.12s;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-2);
+    }
+    .doc-cat-item:last-child { border-bottom: none; }
+    .doc-cat-item:hover { background: var(--surface-2); color: var(--text-1); }
+    .doc-cat-item.active { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+    .doc-cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .doc-cat-count { margin-left: auto; font-size: 11px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+
+    .docs-toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .docs-search {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 16px;
+    }
+    .docs-search:focus-within { border-color: var(--accent); }
+    .docs-search input { border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-1); outline: none; width: 100%; }
+    .docs-search input::placeholder { color: var(--text-3); }
+
+    .doc-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s;
+      cursor: pointer;
+    }
+    .doc-row:last-child { border-bottom: none; }
+    .doc-row:hover { background: var(--surface-2); }
+
+    .doc-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'DM Mono', monospace;
+      flex-shrink: 0;
+    }
+    .doc-icon-pdf  { background: #fee2e2; color: #991b1b; }
+    .doc-icon-doc  { background: #dbeafe; color: #1e40af; }
+    .doc-icon-xls  { background: #dcfce7; color: #15803d; }
+    .doc-icon-ppt  { background: #fed7aa; color: #9a3412; }
+    .doc-icon-txt  { background: var(--surface-3); color: var(--text-2); }
+
+    .doc-info { flex: 1; min-width: 0; }
+    .doc-name { font-size: 14px; font-weight: 500; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .doc-meta { font-size: 11px; color: var(--text-3); font-family: 'DM Mono', monospace; margin-top: 2px; }
+
+    .doc-actions { display: flex; gap: 8px; opacity: 0; transition: opacity 0.15s; }
+    .doc-row:hover .doc-actions { opacity: 1; }
+
+    .section-header {
+      padding: 10px 20px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-family: 'DM Mono', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .recent-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 1px 7px;
+      background: #dcfce7;
+      color: #15803d;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+<script src="nav.js"></script>
+
+<div class="main">
+  <header class="topbar">
+    <span class="page-title">Documentos</span>
+    <div class="topbar-search">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Buscar documento...">
+    </div>
+    <button class="btn btn-primary btn-sm">+ Subir documento</button>
+  </header>
+
+  <div class="content">
+    <div class="page-header">
+      <h1>Repositorio de documentos</h1>
+      <p>Políticas, manuales, formularios y normativa interna</p>
+    </div>
+
+    <div class="doc-layout">
+      <!-- Left sidebar: categories -->
+      <div class="doc-sidebar-card">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);">
+          <div class="text-xs text-faint">CATEGORÍAS</div>
+        </div>
+        <div class="doc-cat-item active" onclick="filterDocs('todos', this)">
+          <span class="doc-cat-dot" style="background:var(--accent)"></span>
+          Todos
+          <span class="doc-cat-count">24</span>
+        </div>
+        <div class="doc-cat-item" onclick="filterDocs('politicas', this)">
+          <span class="doc-cat-dot" style="background:#ef4444"></span>
+          Políticas internas
+          <span class="doc-cat-count">7</span>
+        </div>
+        <div class="doc-cat-item" onclick="filterDocs('rrhh', this)">
+          <span class="doc-cat-dot" style="background:#22c55e"></span>
+          RR.HH.
+          <span class="doc-cat-count">6</span>
+        </div>
+        <div class="doc-cat-item" onclick="filterDocs('it', this)">
+          <span class="doc-cat-dot" style="background:#4f6ef7"></span>
+          Manuales IT
+          <span class="doc-cat-count">5</span>
+        </div>
+        <div class="doc-cat-item" onclick="filterDocs('legal', this)">
+          <span class="doc-cat-dot" style="background:#f59e0b"></span>
+          Legal / Normativa
+          <span class="doc-cat-count">4</span>
+        </div>
+        <div class="doc-cat-item" onclick="filterDocs('formularios', this)">
+          <span class="doc-cat-dot" style="background:#06b6d4"></span>
+          Formularios
+          <span class="doc-cat-count">2</span>
+        </div>
+      </div>
+
+      <!-- Right: document list -->
+      <div>
+        <!-- Search -->
+        <div class="docs-toolbar">
+          <div class="docs-search">
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="Buscar por nombre o categoría..." oninput="searchDocs(this.value)">
+          </div>
+          <select class="form-input" style="width:150px;padding:9px 14px;">
+            <option>Más recientes</option>
+            <option>Nombre A-Z</option>
+            <option>Más descargados</option>
+          </select>
+        </div>
+
+        <div class="card" id="doc-list">
+          <!-- Políticas internas -->
+          <div class="section-header" data-cat="politicas">
+            Políticas internas
+            <span>7 documentos</span>
+          </div>
+
+          <div class="doc-row" data-cat="politicas">
+            <div class="doc-icon doc-icon-pdf">PDF</div>
+            <div class="doc-info">
+              <div class="doc-name">Política de seguridad informática v2.1</div>
+              <div class="doc-meta">30 MAR 2026 · 1.2 MB · Seguridad IT <span class="recent-pill">Nuevo</span></div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <div class="doc-row" data-cat="politicas">
+            <div class="doc-icon doc-icon-pdf">PDF</div>
+            <div class="doc-info">
+              <div class="doc-name">Política de contraseñas y acceso</div>
+              <div class="doc-meta">30 MAR 2026 · 0.8 MB · Seguridad IT <span class="recent-pill">Nuevo</span></div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <div class="doc-row" data-cat="politicas">
+            <div class="doc-icon doc-icon-doc">DOC</div>
+            <div class="doc-info">
+              <div class="doc-name">Código de conducta corporativo</div>
+              <div class="doc-meta">15 ENE 2026 · 0.5 MB · Dirección General</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <div class="doc-row" data-cat="politicas">
+            <div class="doc-icon doc-icon-pdf">PDF</div>
+            <div class="doc-info">
+              <div class="doc-name">Plan de continuidad del negocio</div>
+              <div class="doc-meta">10 FEB 2026 · 2.1 MB · Dirección General</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <!-- RR.HH. -->
+          <div class="section-header" data-cat="rrhh">
+            RR.HH.
+            <span>6 documentos</span>
+          </div>
+
+          <div class="doc-row" data-cat="rrhh">
+            <div class="doc-icon doc-icon-doc">DOC</div>
+            <div class="doc-info">
+              <div class="doc-name">Formulario solicitud de vacaciones 2026</div>
+              <div class="doc-meta">28 MAR 2026 · 0.1 MB · RR.HH. <span class="recent-pill">Nuevo</span></div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <div class="doc-row" data-cat="rrhh">
+            <div class="doc-icon doc-icon-doc">DOC</div>
+            <div class="doc-info">
+              <div class="doc-name">Reglamento interno de empresa</div>
+              <div class="doc-meta">01 ENE 2026 · 0.9 MB · RR.HH.</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <div class="doc-row" data-cat="rrhh">
+            <div class="doc-icon doc-icon-xls">XLS</div>
+            <div class="doc-info">
+              <div class="doc-name">Registro de control horario</div>
+              <div class="doc-meta">01 MAR 2026 · 0.2 MB · RR.HH.</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <!-- Manuales IT -->
+          <div class="section-header" data-cat="it">
+            Manuales IT
+            <span>5 documentos</span>
+          </div>
+
+          <div class="doc-row" data-cat="it">
+            <div class="doc-icon doc-icon-pdf">PDF</div>
+            <div class="doc-info">
+              <div class="doc-name">Manual de usuario — Red local y VPN</div>
+              <div class="doc-meta">20 MAR 2026 · 3.4 MB · Soporte IT</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <div class="doc-row" data-cat="it">
+            <div class="doc-icon doc-icon-pdf">PDF</div>
+            <div class="doc-info">
+              <div class="doc-name">Guía de configuración de impresoras</div>
+              <div class="doc-meta">05 MAR 2026 · 1.1 MB · Soporte IT</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <div class="doc-row" data-cat="it">
+            <div class="doc-icon doc-icon-doc">DOC</div>
+            <div class="doc-info">
+              <div class="doc-name">Procedimiento de backup y restauración</div>
+              <div class="doc-meta">01 FEB 2026 · 0.6 MB · Soporte IT</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <!-- Legal -->
+          <div class="section-header" data-cat="legal">
+            Legal / Normativa
+            <span>4 documentos</span>
+          </div>
+
+          <div class="doc-row" data-cat="legal">
+            <div class="doc-icon doc-icon-pdf">PDF</div>
+            <div class="doc-info">
+              <div class="doc-name">Política de protección de datos (RGPD)</div>
+              <div class="doc-meta">01 ENE 2026 · 1.8 MB · Asesoría Legal</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <div class="doc-row" data-cat="legal">
+            <div class="doc-icon doc-icon-pdf">PDF</div>
+            <div class="doc-info">
+              <div class="doc-name">Normativa de uso de equipos informáticos</div>
+              <div class="doc-meta">01 ENE 2026 · 0.7 MB · Asesoría Legal</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <!-- Formularios -->
+          <div class="section-header" data-cat="formularios">
+            Formularios
+            <span>2 documentos</span>
+          </div>
+
+          <div class="doc-row" data-cat="formularios">
+            <div class="doc-icon doc-icon-doc">DOC</div>
+            <div class="doc-info">
+              <div class="doc-name">Solicitud de material de oficina</div>
+              <div class="doc-meta">01 ENE 2026 · 0.1 MB · Administración</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+          <div class="doc-row" data-cat="formularios">
+            <div class="doc-icon doc-icon-doc">DOC</div>
+            <div class="doc-info">
+              <div class="doc-name">Solicitud de acceso a sistemas</div>
+              <div class="doc-meta">01 ENE 2026 · 0.1 MB · Soporte IT</div>
+            </div>
+            <div class="doc-actions">
+              <button class="btn btn-ghost btn-sm">Ver</button>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="no-doc-results" style="display:none;text-align:center;padding:48px;color:var(--text-3);">
+          <div style="font-size:32px;margin-bottom:8px;">📂</div>
+          <div class="font-500" style="color:var(--text-2);">No se encontraron documentos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function filterDocs(cat, btn) {
+  document.querySelectorAll('.doc-cat-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  let vis = 0;
+  document.querySelectorAll('.doc-row').forEach(r => {
+    const show = cat === 'todos' || r.dataset.cat === cat;
+    r.style.display = show ? '' : 'none';
+    if (show) vis++;
+  });
+  document.querySelectorAll('.section-header').forEach(h => {
+    h.style.display = (cat === 'todos' || h.dataset.cat === cat) ? '' : 'none';
+  });
+  document.getElementById('no-doc-results').style.display = vis === 0 ? '' : 'none';
+}
+function searchDocs(q) {
+  const s = q.toLowerCase();
+  document.querySelectorAll('.doc-row').forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(s) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
