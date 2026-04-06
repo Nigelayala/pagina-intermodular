@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechCorp — Acceso Intranet</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--accent:#4f6ef7;--accent-dark:#3a55d4;--accent-light:#e8ecff;--surface:#fff;--surface-2:#f5f6fa;--border:#e2e4ef;--text-1:#0f1322;--text-2:#5a6075;--text-3:#9298ad;--danger:#ef4444;--success:#22c55e;--bg:#f0f2fb;}
+    [data-theme="dark"]{--surface:#1e2335;--surface-2:#161929;--border:#2d3354;--text-1:#e8eaf2;--text-2:#8b91ab;--text-3:#555e7a;--bg:#11131e;--accent-light:#1e2a5c;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;transition:background .3s;position:relative;overflow:hidden;}
+    body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(79,110,247,.08) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(79,110,247,.06) 0%,transparent 50%);pointer-events:none;}
+    .grid-bg{position:fixed;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.4;pointer-events:none;}
+    .theme-btn{position:fixed;top:20px;right:20px;width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--text-2);z-index:10;}
+    .theme-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .login-wrap{width:100%;max-width:440px;padding:20px;position:relative;z-index:1;}
+    .login-header{text-align:center;margin-bottom:28px;}
+    .login-logo{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:var(--accent);border-radius:16px;font-size:20px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 8px 24px rgba(79,110,247,.35);}
+    .login-title{font-size:22px;font-weight:600;color:var(--text-1);margin-bottom:4px;}
+    .login-sub{font-size:13px;color:var(--text-3);font-family:'DM Mono',monospace;}
+    .tab-switch{display:flex;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;}
+    .tab-btn{flex:1;padding:9px;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;color:var(--text-3);background:transparent;}
+    .tab-btn.active{background:var(--surface);color:var(--text-1);box-shadow:0 1px 4px rgba(15,19,34,.1);}
+    .login-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:0 4px 32px rgba(15,19,34,.08),0 1px 4px rgba(15,19,34,.04);transition:background .3s,border-color .3s;}
+    .panel{display:none;}.panel.active{display:block;}
+    .form-group{margin-bottom:16px;}
+    .form-label{display:block;font-size:13px;font-weight:500;color:var(--text-2);margin-bottom:6px;}
+    .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .input-wrap{position:relative;display:flex;align-items:center;}
+    .input-icon{position:absolute;left:14px;color:var(--text-3);pointer-events:none;}
+    .form-input{width:100%;padding:11px 14px 11px 40px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-1);background:var(--surface-2);outline:none;transition:border-color .15s,background .15s,box-shadow .15s;}
+    .form-input:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px rgba(79,110,247,.12);}
+    .form-input::placeholder{color:var(--text-3);}
+    .form-input.error{border-color:var(--danger);}
+    .form-input.ok{border-color:var(--success);}
+    .eye-btn{position:absolute;right:12px;background:none;border:none;cursor:pointer;padding:4px;color:var(--text-3);transition:color .15s;}
+    .eye-btn:hover{color:var(--text-2);}
+    .field-ok{position:absolute;right:12px;color:var(--success);pointer-events:none;display:none;}
+    .field-ok.show{display:block;}
+    .strength-bar{display:flex;gap:4px;margin-top:6px;}
+    .strength-seg{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s;}
+    .strength-label{font-size:11px;color:var(--text-3);margin-top:4px;font-family:'DM Mono',monospace;}
+    .select-input{width:100%;padding:11px 36px 11px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-1);background:var(--surface-2);outline:none;transition:border-color .15s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239298ad' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer;}
+    .select-input:focus{border-color:var(--accent);}
+    .form-row-split{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+    .remember-label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2);cursor:pointer;}
+    .remember-label input{width:15px;height:15px;accent-color:var(--accent);}
+    .forgot-link{font-size:13px;color:var(--accent);text-decoration:none;}
+    .forgot-link:hover{opacity:.75;}
+    .form-row-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;}
+    .form-row-check input{margin-top:2px;accent-color:var(--accent);}
+    .form-row-check label{font-size:13px;color:var(--text-2);line-height:1.5;}
+    .form-row-check a{color:var(--accent);text-decoration:none;}
+    .btn-main{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s,transform .1s,box-shadow .15s;box-shadow:0 4px 14px rgba(79,110,247,.35);display:flex;align-items:center;justify-content:center;gap:8px;}
+    .btn-main:hover{background:var(--accent-dark);box-shadow:0 6px 20px rgba(79,110,247,.45);}
+    .btn-main:active{transform:scale(.98);}
+    .alert{display:none;border-radius:9px;padding:10px 14px;font-size:13px;margin-bottom:16px;align-items:center;gap:8px;}
+    .alert.show{display:flex;}
+    .alert-error{background:#fee2e2;border:1px solid #fecaca;color:#991b1b;}
+    .alert-success{background:#dcfce7;border:1px solid #86efac;color:#15803d;}
+    .spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .demo-hint{margin-top:18px;padding:11px 14px;background:var(--accent-light);border-radius:10px;font-size:12px;color:var(--accent);font-family:'DM Mono',monospace;display:flex;flex-direction:column;gap:3px;}
+    .demo-hint span{opacity:.75;}
+    .login-footer{text-align:center;margin-top:22px;font-size:12px;color:var(--text-3);font-family:'DM Mono',monospace;}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+    .shake{animation:shake .4s ease;}
+  </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<button class="theme-btn" onclick="toggleTheme()">
+  <svg id="icon-sun" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" style="display:none"><circle cx="10" cy="10" r="4"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4"/></svg>
+  <svg id="icon-moon" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M17 12A7 7 0 119 4a5 5 0 008 8z"/></svg>
+</button>
+
+<div class="login-wrap">
+  <div class="login-header">
+    <div class="login-logo">IT</div>
+    <h1 class="login-title">TechCorp S.L.</h1>
+    <p class="login-sub">INTRANET CORPORATIVA · v1.0</p>
+  </div>
+
+  <div class="tab-switch">
+    <button class="tab-btn active" id="tab-login-btn" onclick="switchTab('login')">Iniciar sesión</button>
+    <button class="tab-btn" id="tab-reg-btn" onclick="switchTab('registro')">Registrarse</button>
+  </div>
+
+  <div class="login-card" id="main-card">
+
+    <!-- LOGIN -->
+    <div class="panel active" id="panel-login">
+      <div class="alert alert-error" id="login-error">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M10 6v4M10 14h.01"/></svg>
+        <span id="login-error-text">Usuario o contraseña incorrectos.</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Usuario</label>
+        <div class="input-wrap">
+          <span class="input-icon"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="8" r="3"/><path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></span>
+          <input class="form-input" type="text" id="login-user" placeholder="tu.nombre@techcorp.es" autocomplete="username">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <div class="input-wrap">
+          <span class="input-icon"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="8" width="14" height="10" rx="2"/><path d="M7 8V6a3 3 0 016 0v2"/></svg></span>
+          <input class="form-input" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+          <button class="eye-btn" onclick="togglePass('login-pass','eye1')" type="button" tabindex="-1">
+            <svg id="eye1" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z"/><circle cx="10" cy="10" r="2.5"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="form-row-split">
+        <label class="remember-label"><input type="checkbox" id="remember"> Recordarme</label>
+        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+      </div>
+      <button class="btn-main" onclick="doLogin()">
+        <span id="login-btn-text">Entrar</span>
+        <div class="spinner" id="login-spinner"></div>
+        <svg id="login-btn-icon" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10h12M11 5l5 5-5 5"/></svg>
+      </button>
+      <div class="demo-hint">
+        <strong>Credenciales de prueba:</strong>
+        <span>Usuario: <strong>admin</strong> · Contraseña: <strong>admin123</strong></span>
+        <span>Usuario: <strong>usuario</strong> · Contraseña: <strong>1234</strong></span>
+      </div>
+    </div>
+
+    <!-- REGISTRO -->
+    <div class="panel" id="panel-registro">
+      <div class="alert alert-error" id="reg-error">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M10 6v4M10 14h.01"/></svg>
+        <span id="reg-error-text">Revisa los campos.</span>
+      </div>
+      <div class="alert alert-success" id="reg-success">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M7 10l2 2 4-4"/></svg>
+        <span>¡Cuenta creada! Redirigiendo...</span>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label">Nombre *</label>
+          <div class="input-wrap">
+            <span class="input-icon"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="8" r="3"/><path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></span>
+            <input class="form-input" type="text" id="reg-nombre" placeholder="Laura">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Apellidos *</label>
+          <div class="input-wrap">
+            <span class="input-icon"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="8" r="3"/><path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></span>
+            <input class="form-input" type="text" id="reg-apellidos" placeholder="Martínez">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Correo corporativo *</label>
+        <div class="input-wrap">
+          <span class="input-icon"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg></span>
+          <input class="form-input" type="email" id="reg-email" placeholder="nombre@techcorp.es" oninput="validateEmail()">
+          <span class="field-ok" id="email-ok"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 10l4 4 6-6"/></svg></span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Departamento *</label>
+        <select class="select-input" id="reg-dpto">
+          <option value="">Selecciona un departamento...</option>
+          <option>Administración</option>
+          <option>Ventas</option>
+          <option>Operaciones</option>
+          <option>Dirección</option>
+          <option>Soporte IT</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña *</label>
+        <div class="input-wrap">
+          <span class="input-icon"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="8" width="14" height="10" rx="2"/><path d="M7 8V6a3 3 0 016 0v2"/></svg></span>
+          <input class="form-input" type="password" id="reg-pass" placeholder="Mínimo 8 caracteres" oninput="checkStrength()">
+          <button class="eye-btn" onclick="togglePass('reg-pass','eye2')" type="button" tabindex="-1">
+            <svg id="eye2" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z"/><circle cx="10" cy="10" r="2.5"/></svg>
+          </button>
+        </div>
+        <div class="strength-bar"><div class="strength-seg" id="s1"></div><div class="strength-seg" id="s2"></div><div class="strength-seg" id="s3"></div><div class="strength-seg" id="s4"></div></div>
+        <div class="strength-label" id="strength-label"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirmar contraseña *</label>
+        <div class="input-wrap">
+          <span class="input-icon"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="8" width="14" height="10" rx="2"/><path d="M7 8V6a3 3 0 016 0v2"/></svg></span>
+          <input class="form-input" type="password" id="reg-pass2" placeholder="Repite la contraseña" oninput="checkMatch()">
+          <span class="field-ok" id="pass-ok"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 10l4 4 6-6"/></svg></span>
+        </div>
+      </div>
+      <div class="form-row-check">
+        <input type="checkbox" id="reg-terms">
+        <label for="reg-terms">Acepto la <a href="#">política de privacidad</a> y los <a href="#">términos de uso</a> de la intranet corporativa.</label>
+      </div>
+      <button class="btn-main" onclick="doRegister()">
+        <span id="reg-btn-text">Crear cuenta</span>
+        <div class="spinner" id="reg-spinner"></div>
+        <svg id="reg-btn-icon" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 4v12M4 10h12"/></svg>
+      </button>
+    </div>
+
+  </div>
+  <div class="login-footer">TechCorp S.L. · Sistema de acceso seguro · 2026</div>
+</div>
+
+<script>
+  function getUsers(){const s=localStorage.getItem('intranet_users');const b=[{user:'admin',pass:'admin123',name:'Administrador',role:'Administrador'},{user:'usuario',pass:'1234',name:'Usuario Demo',role:'Empleado'},{user:'l.martinez@techcorp.es',pass:'1234',name:'Laura Martínez',role:'Administración'}];return s?[...b,...JSON.parse(s)]:b;}
+  function saveUser(u){const s=JSON.parse(localStorage.getItem('intranet_users')||'[]');s.push(u);localStorage.setItem('intranet_users',JSON.stringify(s));}
+
+  const savedTheme=localStorage.getItem('theme')||'light';
+  applyTheme(savedTheme);
+  function applyTheme(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('icon-sun').style.display=t==='dark'?'block':'none';document.getElementById('icon-moon').style.display=t==='dark'?'none':'block';localStorage.setItem('theme',t);}
+  function toggleTheme(){applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');}
+
+  function switchTab(tab){
+    document.getElementById('panel-login').classList.toggle('active',tab==='login');
+    document.getElementById('panel-registro').classList.toggle('active',tab==='registro');
+    document.getElementById('tab-login-btn').classList.toggle('active',tab==='login');
+    document.getElementById('tab-reg-btn').classList.toggle('active',tab==='registro');
+    ['login-error','reg-error','reg-success'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  }
+
+  function togglePass(inputId,iconId){const inp=document.getElementById(inputId);inp.type=inp.type==='password'?'text':'password';document.getElementById(iconId).style.opacity=inp.type==='text'?'0.4':'1';}
+
+  function validateEmail(){const v=document.getElementById('reg-email').value;const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);document.getElementById('reg-email').className='form-input '+(v?(ok?'ok':'error'):'');document.getElementById('email-ok').className='field-ok '+(ok?'show':'');}
+
+  function checkStrength(){const p=document.getElementById('reg-pass').value;let score=0;if(p.length>=8)score++;if(/[A-Z]/.test(p))score++;if(/[0-9]/.test(p))score++;if(/[^A-Za-z0-9]/.test(p))score++;const colors=['','#ef4444','#f59e0b','#22c55e','#16a34a'];const labels=['','Débil','Regular','Buena','Muy segura'];for(let i=1;i<=4;i++)document.getElementById('s'+i).style.background=i<=score?colors[score]:'var(--border)';document.getElementById('strength-label').textContent=p?labels[score]:'';document.getElementById('strength-label').style.color=colors[score]||'var(--text-3)';checkMatch();}
+
+  function checkMatch(){const p1=document.getElementById('reg-pass').value;const p2=document.getElementById('reg-pass2').value;if(!p2){document.getElementById('reg-pass2').className='form-input';document.getElementById('pass-ok').className='field-ok';return;}const m=p1===p2;document.getElementById('reg-pass2').className='form-input '+(m?'ok':'error');document.getElementById('pass-ok').className='field-ok '+(m?'show':'');}
+
+  function doLogin(){
+    const u=document.getElementById('login-user').value.trim();
+    const p=document.getElementById('login-pass').value;
+    if(!u||!p){showAlert('login-error','login-error-text','Introduce usuario y contraseña.');return;}
+    setLoading('login',true);
+    setTimeout(()=>{
+      const found=getUsers().find(x=>x.user===u&&x.pass===p);
+      if(found){
+        sessionStorage.setItem('loggedIn','true');
+        sessionStorage.setItem('userName',found.name);
+        sessionStorage.setItem('userRole',found.role);
+        if(document.getElementById('remember').checked)localStorage.setItem('rememberedUser',u);
+        document.getElementById('login-btn-text').textContent='¡Acceso concedido!';
+        setTimeout(()=>window.location.href='index.html',600);
+      }else{
+        showAlert('login-error','login-error-text','Usuario o contraseña incorrectos.');
+        setLoading('login',false);shake();
+      }
+    },900);
+  }
+
+  function doRegister(){
+    const nombre=document.getElementById('reg-nombre').value.trim();
+    const apellidos=document.getElementById('reg-apellidos').value.trim();
+    const email=document.getElementById('reg-email').value.trim();
+    const dpto=document.getElementById('reg-dpto').value;
+    const pass=document.getElementById('reg-pass').value;
+    const pass2=document.getElementById('reg-pass2').value;
+    const terms=document.getElementById('reg-terms').checked;
+    if(!nombre||!apellidos||!email||!dpto||!pass||!pass2){showAlert('reg-error','reg-error-text','Rellena todos los campos obligatorios.');shake();return;}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showAlert('reg-error','reg-error-text','El correo electrónico no es válido.');shake();return;}
+    if(pass.length<8){showAlert('reg-error','reg-error-text','La contraseña debe tener al menos 8 caracteres.');shake();return;}
+    if(pass!==pass2){showAlert('reg-error','reg-error-text','Las contraseñas no coinciden.');shake();return;}
+    if(!terms){showAlert('reg-error','reg-error-text','Debes aceptar los términos de uso.');shake();return;}
+    if(getUsers().find(x=>x.user===email)){showAlert('reg-error','reg-error-text','Ya existe una cuenta con ese correo.');shake();return;}
+    setLoading('reg',true);
+    setTimeout(()=>{
+      const newUser={user:email,pass,name:nombre+' '+apellidos,role:dpto};
+      saveUser(newUser);
+      sessionStorage.setItem('loggedIn','true');
+      sessionStorage.setItem('userName',newUser.name);
+      sessionStorage.setItem('userRole',dpto);
+      document.getElementById('reg-error').classList.remove('show');
+      document.getElementById('reg-success').classList.add('show');
+      setTimeout(()=>window.location.href='index.html',1200);
+    },1000);
+  }
+
+  function showAlert(boxId,textId,msg){document.getElementById(textId).textContent=msg;document.getElementById(boxId).classList.add('show');}
+  function setLoading(prefix,on){document.getElementById(prefix+'-btn-text').textContent=on?(prefix==='login'?'Verificando...':'Creando cuenta...'):(prefix==='login'?'Entrar':'Crear cuenta');document.getElementById(prefix+'-spinner').style.display=on?'block':'none';document.getElementById(prefix+'-btn-icon').style.display=on?'none':'block';}
+  function shake(){const c=document.getElementById('main-card');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);}
+
+  document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;document.getElementById('panel-login').classList.contains('active')?doLogin():doRegister();});
+  const rem=localStorage.getItem('rememberedUser');
+  if(rem){document.getElementById('login-user').value=rem;document.getElementById('remember').checked=true;}
+</script>
+</body>
+</html>
