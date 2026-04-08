@@ -6,112 +6,56 @@
   <title>Intranet — Servicios IT</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .it-tabs {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 24px;
-      border-bottom: 2px solid var(--border);
-    }
-    .it-tab {
-      padding: 9px 20px;
-      border: none; background: transparent;
-      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-      color: var(--text-3); cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      transition: all 0.15s;
-    }
-    .it-tab:hover { color: var(--text-1); }
-    .it-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .it-tabs { display:flex; gap:6px; margin-bottom:24px; border-bottom:2px solid var(--border); }
+    .it-tab { padding:9px 20px; border:none; background:transparent; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; color:var(--text-3); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .15s; }
+    .it-tab:hover { color:var(--text-1); }
+    .it-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
 
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .ticket-row { display:grid; grid-template-columns:8px 60px 1fr 130px 100px 90px 80px; gap:16px; align-items:center; padding:14px 20px; border-bottom:1px solid var(--border); transition:background .12s; cursor:pointer; }
+    .ticket-row:last-child { border-bottom:none; }
+    .ticket-row:hover { background:var(--surface-2); }
+    .ticket-id { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-3); }
+    .ticket-info .ticket-title { font-size:14px; font-weight:500; color:var(--text-1); }
+    .ticket-info .ticket-meta  { font-size:11px; color:var(--text-3); font-family:'DM Mono',monospace; margin-top:2px; }
+    .priority-dot { width:8px; height:8px; border-radius:50%; }
+    .p-high   { background:var(--danger); }
+    .p-medium { background:var(--warning); }
+    .p-low    { background:var(--success); }
 
-    /* Tickets */
-    .ticket-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.12s;
-      cursor: pointer;
-    }
-    .ticket-row:last-child { border-bottom: none; }
-    .ticket-row:hover { background: var(--surface-2); }
+    .srv-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+    .srv-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px 20px; display:flex; align-items:center; gap:14px; box-shadow:var(--shadow); }
+    .srv-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .srv-info { flex:1; }
+    .srv-name   { font-size:14px; font-weight:500; color:var(--text-1); }
+    .srv-detail { font-size:12px; color:var(--text-3); font-family:'DM Mono',monospace; margin-top:2px; }
+    .uptime-bar { height:3px; background:var(--surface-3); border-radius:2px; margin-top:6px; overflow:hidden; }
+    .uptime-fill { height:100%; background:var(--success); border-radius:2px; }
+    .srv-uptime { font-size:11px; color:var(--text-3); margin-top:4px; }
 
-    .ticket-id { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-3); width: 60px; flex-shrink: 0; }
-    .ticket-info { flex: 1; min-width: 0; }
-    .ticket-title { font-size: 14px; font-weight: 500; color: var(--text-1); }
-    .ticket-meta  { font-size: 11px; color: var(--text-3); font-family: 'DM Mono', monospace; margin-top: 2px; }
-    .ticket-user  { font-size: 12px; color: var(--text-2); width: 130px; flex-shrink: 0; }
+    .tools-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .tool-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px; text-decoration:none; color:var(--text-1); transition:all .18s; display:flex; flex-direction:column; gap:10px; box-shadow:var(--shadow); }
+    .tool-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); border-color:var(--accent); }
+    .tool-name { font-size:14px; font-weight:600; }
+    .tool-desc { font-size:12px; color:var(--text-2); }
+    .tool-url  { font-size:11px; color:var(--text-3); font-family:'DM Mono',monospace; }
 
-    .priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .p-high   { background: var(--danger); }
-    .p-medium { background: var(--warning); }
-    .p-low    { background: var(--success); }
+    /* ── MODAL ── */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,19,34,0.5); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center; padding:20px; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px; width:100%; max-width:560px; box-shadow:0 20px 60px rgba(0,0,0,0.2); animation:slideUp .2s ease; }
+    @keyframes slideUp { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+    .modal-title { font-size:17px; font-weight:600; color:var(--text-1); }
+    .modal-close { width:32px; height:32px; border:none; background:var(--surface-2); border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-3); transition:all .15s; }
+    .modal-close:hover { background:var(--surface-3); color:var(--text-1); }
+    .modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; }
 
-    /* New ticket form */
-    .ticket-form {
-      max-width: 600px;
-    }
+    .success-toast { position:fixed; bottom:24px; right:24px; background:#dcfce7; border:1px solid #86efac; color:#15803d; padding:12px 18px; border-radius:12px; font-size:14px; font-weight:500; display:flex; align-items:center; gap:8px; box-shadow:0 4px 16px rgba(0,0,0,0.1); z-index:2000; transform:translateY(80px); opacity:0; transition:all .3s ease; }
+    .success-toast.show { transform:translateY(0); opacity:1; }
 
-    /* Services status */
-    .srv-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .srv-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 18px 20px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      box-shadow: var(--shadow);
-    }
-    .srv-icon {
-      width: 40px; height: 40px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .srv-info { flex: 1; }
-    .srv-name   { font-size: 14px; font-weight: 500; color: var(--text-1); }
-    .srv-detail { font-size: 12px; color: var(--text-3); font-family: 'DM Mono', monospace; margin-top: 2px; }
-    .srv-uptime { font-size: 11px; color: var(--text-3); margin-top: 4px; }
-
-    .uptime-bar {
-      height: 3px;
-      background: var(--surface-3);
-      border-radius: 2px;
-      margin-top: 6px;
-      overflow: hidden;
-    }
-    .uptime-fill { height: 100%; background: var(--success); border-radius: 2px; }
-
-    /* Tools quick access */
-    .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .tool-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 18px;
-      text-decoration: none;
-      color: var(--text-1);
-      transition: all 0.18s;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      box-shadow: var(--shadow);
-    }
-    .tool-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent); }
-    .tool-name { font-size: 14px; font-weight: 600; }
-    .tool-desc { font-size: 12px; color: var(--text-2); }
-    .tool-url  { font-size: 11px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+    .ticket-header { padding:10px 20px; background:var(--surface-2); border-bottom:1px solid var(--border); display:grid; grid-template-columns:8px 60px 1fr 130px 100px 90px 80px; gap:16px; align-items:center; }
   </style>
 </head>
 <body>
@@ -124,7 +68,10 @@
       <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
       <input type="text" placeholder="Buscar...">
     </div>
-    <button class="btn btn-primary btn-sm" onclick="openTab('nuevo', document.querySelector('[data-tab=nuevo]'))">+ Nuevo ticket</button>
+    <button class="btn btn-primary btn-sm" onclick="abrirModal()">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 4v12M4 10h12"/></svg>
+      Nuevo ticket
+    </button>
   </header>
 
   <div class="content">
@@ -133,49 +80,30 @@
       <p>Soporte técnico, estado de servicios y herramientas de red</p>
     </div>
 
-    <!-- Tabs -->
     <div class="it-tabs">
-      <button class="it-tab active" data-tab="tickets"  onclick="openTab('tickets', this)">Tickets <span class="nav-badge" style="background:var(--danger)">7</span></button>
-      <button class="it-tab" data-tab="nuevo"   onclick="openTab('nuevo', this)">Nuevo ticket</button>
-      <button class="it-tab" data-tab="servicios" onclick="openTab('servicios', this)">Estado de servicios</button>
-      <button class="it-tab" data-tab="herramientas" onclick="openTab('herramientas', this)">Herramientas</button>
+      <button class="it-tab active" data-tab="tickets" onclick="openTab('tickets',this)">Tickets <span class="nav-badge" style="background:var(--danger)" id="badge-count">7</span></button>
+      <button class="it-tab" data-tab="servicios"    onclick="openTab('servicios',this)">Estado de servicios</button>
+      <button class="it-tab" data-tab="herramientas" onclick="openTab('herramientas',this)">Herramientas</button>
     </div>
 
-    <!-- TAB: Tickets -->
+    <!-- TAB TICKETS -->
     <div class="tab-content active" id="tab-tickets">
       <div class="grid-4 mb-20">
-        <div class="stat-card">
-          <div class="stat-label">Abiertos</div>
-          <div class="stat-value" style="color:var(--accent)">7</div>
-          <div class="stat-meta">Total activos</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Urgentes</div>
-          <div class="stat-value" style="color:var(--danger)">2</div>
-          <div class="stat-meta">Requieren atención</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Resueltos (mes)</div>
-          <div class="stat-value" style="color:var(--success)">18</div>
-          <div class="stat-meta">Marzo 2026</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Tiempo medio</div>
-          <div class="stat-value">4<span style="font-size:16px;color:var(--text-3)">h</span></div>
-          <div class="stat-meta">Resolución media</div>
-        </div>
+        <div class="stat-card"><div class="stat-label">Abiertos</div><div class="stat-value" style="color:var(--accent)" id="count-abiertos">4</div><div class="stat-meta">Total activos</div></div>
+        <div class="stat-card"><div class="stat-label">Urgentes</div><div class="stat-value" style="color:var(--danger)" id="count-urgentes">2</div><div class="stat-meta">Requieren atención</div></div>
+        <div class="stat-card"><div class="stat-label">En progreso</div><div class="stat-value" style="color:var(--warning)" id="count-progreso">2</div><div class="stat-meta">Siendo atendidos</div></div>
+        <div class="stat-card"><div class="stat-label">Resueltos (mes)</div><div class="stat-value" style="color:var(--success)">18</div><div class="stat-meta">Marzo 2026</div></div>
       </div>
 
-      <!-- Filter bar -->
-      <div style="display:flex;gap:8px;margin-bottom:16px;">
-        <button class="filter-btn active" onclick="filterTickets('todos',this)" style="padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--accent);color:#fff;font-size:12px;cursor:pointer;">Todos</button>
+      <div style="display:flex;gap:8px;margin-bottom:16px;" id="filter-btns">
+        <button class="filter-btn active" onclick="filterTickets('todos',this)" style="padding:5px 14px;border-radius:20px;border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Todos</button>
         <button class="filter-btn" onclick="filterTickets('abierto',this)" style="padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Abiertos</button>
         <button class="filter-btn" onclick="filterTickets('en-progreso',this)" style="padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">En progreso</button>
         <button class="filter-btn" onclick="filterTickets('resuelto',this)" style="padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Resueltos</button>
       </div>
 
       <div class="card">
-        <div style="padding:10px 20px;background:var(--surface-2);border-bottom:1px solid var(--border);display:grid;grid-template-columns:8px 60px 1fr 130px 100px 90px 80px;gap:16px;align-items:center;">
+        <div class="ticket-header">
           <div></div>
           <div class="text-xs text-faint">ID</div>
           <div class="text-xs text-faint">ASUNTO</div>
@@ -185,245 +113,208 @@
           <div class="text-xs text-faint">FECHA</div>
         </div>
         <div id="ticket-list">
-          <div class="ticket-row" data-status="abierto" style="display:grid;grid-template-columns:8px 60px 1fr 130px 100px 90px 80px;gap:16px;align-items:center;">
-            <span class="priority-dot p-high"></span>
-            <span class="ticket-id">#0042</span>
-            <div class="ticket-info"><div class="ticket-title">PC del dpto. de Ventas no arranca</div><div class="ticket-meta">Hw · Ventas</div></div>
-            <span class="ticket-user">Pablo Sánchez</span>
-            <span class="badge badge-red">Alta</span>
-            <span class="badge" style="background:#e0e7ff;color:#3730a3;">Abierto</span>
-            <span class="text-xs text-faint">30/03</span>
-          </div>
-          <div class="ticket-row" data-status="abierto" style="display:grid;grid-template-columns:8px 60px 1fr 130px 100px 90px 80px;gap:16px;align-items:center;">
-            <span class="priority-dot p-high"></span>
-            <span class="ticket-id">#0041</span>
-            <div class="ticket-info"><div class="ticket-title">Acceso denegado a carpetas compartidas</div><div class="ticket-meta">Red · Administración</div></div>
-            <span class="ticket-user">Laura Martínez</span>
-            <span class="badge badge-red">Alta</span>
-            <span class="badge" style="background:#e0e7ff;color:#3730a3;">Abierto</span>
-            <span class="text-xs text-faint">30/03</span>
-          </div>
-          <div class="ticket-row" data-status="en-progreso" style="display:grid;grid-template-columns:8px 60px 1fr 130px 100px 90px 80px;gap:16px;align-items:center;">
-            <span class="priority-dot p-medium"></span>
-            <span class="ticket-id">#0040</span>
-            <div class="ticket-info"><div class="ticket-title">Impresora de planta 2 sin conectividad</div><div class="ticket-meta">Hw · Operaciones</div></div>
-            <span class="ticket-user">Elena Fernández</span>
-            <span class="badge badge-yellow">Media</span>
-            <span class="badge badge-teal">En progreso</span>
-            <span class="text-xs text-faint">29/03</span>
-          </div>
-          <div class="ticket-row" data-status="en-progreso" style="display:grid;grid-template-columns:8px 60px 1fr 130px 100px 90px 80px;gap:16px;align-items:center;">
-            <span class="priority-dot p-medium"></span>
-            <span class="ticket-id">#0039</span>
-            <div class="ticket-info"><div class="ticket-title">Lentitud en la conexión VPN</div><div class="ticket-meta">Red · Ventas</div></div>
-            <span class="ticket-user">Sofía López</span>
-            <span class="badge badge-yellow">Media</span>
-            <span class="badge badge-teal">En progreso</span>
-            <span class="text-xs text-faint">28/03</span>
-          </div>
-          <div class="ticket-row" data-status="abierto" style="display:grid;grid-template-columns:8px 60px 1fr 130px 100px 90px 80px;gap:16px;align-items:center;">
-            <span class="priority-dot p-low"></span>
-            <span class="ticket-id">#0038</span>
-            <div class="ticket-info"><div class="ticket-title">Solicitud nuevo usuario de dominio</div><div class="ticket-meta">Sistemas · Dirección</div></div>
-            <span class="ticket-user">Isabel Navarro</span>
-            <span class="badge badge-green">Baja</span>
-            <span class="badge" style="background:#e0e7ff;color:#3730a3;">Abierto</span>
-            <span class="text-xs text-faint">27/03</span>
-          </div>
-          <div class="ticket-row" data-status="resuelto" style="display:grid;grid-template-columns:8px 60px 1fr 130px 100px 90px 80px;gap:16px;align-items:center;">
-            <span class="priority-dot" style="background:var(--text-3)"></span>
-            <span class="ticket-id">#0037</span>
-            <div class="ticket-info"><div class="ticket-title">Actualizar certificado SSL del servidor web</div><div class="ticket-meta">Seguridad · Sistemas</div></div>
-            <span class="ticket-user">David Moreno</span>
-            <span class="badge badge-green">Baja</span>
-            <span class="badge badge-green">Resuelto</span>
-            <span class="text-xs text-faint">26/03</span>
-          </div>
-          <div class="ticket-row" data-status="resuelto" style="display:grid;grid-template-columns:8px 60px 1fr 130px 100px 90px 80px;gap:16px;align-items:center;">
-            <span class="priority-dot" style="background:var(--text-3)"></span>
-            <span class="ticket-id">#0036</span>
-            <div class="ticket-info"><div class="ticket-title">Configurar correo en nuevo portátil</div><div class="ticket-meta">Sw · Ventas</div></div>
-            <span class="ticket-user">Miguel Torres</span>
-            <span class="badge badge-green">Baja</span>
-            <span class="badge badge-green">Resuelto</span>
-            <span class="text-xs text-faint">25/03</span>
-          </div>
+          <div class="ticket-row" data-status="abierto"><span class="priority-dot p-high"></span><span class="ticket-id">#0042</span><div class="ticket-info"><div class="ticket-title">PC del dpto. de Ventas no arranca</div><div class="ticket-meta">Hw · Ventas</div></div><span style="font-size:12px;color:var(--text-2);">Pablo Sánchez</span><span class="badge badge-red">Alta</span><span class="badge" style="background:#e0e7ff;color:#3730a3;">Abierto</span><span class="text-xs text-faint">30/03</span></div>
+          <div class="ticket-row" data-status="abierto"><span class="priority-dot p-high"></span><span class="ticket-id">#0041</span><div class="ticket-info"><div class="ticket-title">Acceso denegado a carpetas compartidas</div><div class="ticket-meta">Red · Administración</div></div><span style="font-size:12px;color:var(--text-2);">Laura Martínez</span><span class="badge badge-red">Alta</span><span class="badge" style="background:#e0e7ff;color:#3730a3;">Abierto</span><span class="text-xs text-faint">30/03</span></div>
+          <div class="ticket-row" data-status="en-progreso"><span class="priority-dot p-medium"></span><span class="ticket-id">#0040</span><div class="ticket-info"><div class="ticket-title">Impresora de planta 2 sin conectividad</div><div class="ticket-meta">Hw · Operaciones</div></div><span style="font-size:12px;color:var(--text-2);">Elena Fernández</span><span class="badge badge-yellow">Media</span><span class="badge badge-teal">En progreso</span><span class="text-xs text-faint">29/03</span></div>
+          <div class="ticket-row" data-status="en-progreso"><span class="priority-dot p-medium"></span><span class="ticket-id">#0039</span><div class="ticket-info"><div class="ticket-title">Lentitud en la conexión VPN</div><div class="ticket-meta">Red · Ventas</div></div><span style="font-size:12px;color:var(--text-2);">Sofía López</span><span class="badge badge-yellow">Media</span><span class="badge badge-teal">En progreso</span><span class="text-xs text-faint">28/03</span></div>
+          <div class="ticket-row" data-status="abierto"><span class="priority-dot p-low"></span><span class="ticket-id">#0038</span><div class="ticket-info"><div class="ticket-title">Solicitud nuevo usuario de dominio</div><div class="ticket-meta">Sistemas · Dirección</div></div><span style="font-size:12px;color:var(--text-2);">Isabel Navarro</span><span class="badge badge-green">Baja</span><span class="badge" style="background:#e0e7ff;color:#3730a3;">Abierto</span><span class="text-xs text-faint">27/03</span></div>
+          <div class="ticket-row" data-status="resuelto"><span class="priority-dot" style="background:var(--text-3)"></span><span class="ticket-id">#0037</span><div class="ticket-info"><div class="ticket-title">Actualizar certificado SSL del servidor web</div><div class="ticket-meta">Seguridad · Sistemas</div></div><span style="font-size:12px;color:var(--text-2);">David Moreno</span><span class="badge badge-green">Baja</span><span class="badge badge-green">Resuelto</span><span class="text-xs text-faint">26/03</span></div>
+          <div class="ticket-row" data-status="resuelto"><span class="priority-dot" style="background:var(--text-3)"></span><span class="ticket-id">#0036</span><div class="ticket-info"><div class="ticket-title">Configurar correo en nuevo portátil</div><div class="ticket-meta">Sw · Ventas</div></div><span style="font-size:12px;color:var(--text-2);">Miguel Torres</span><span class="badge badge-green">Baja</span><span class="badge badge-green">Resuelto</span><span class="text-xs text-faint">25/03</span></div>
         </div>
       </div>
     </div>
 
-    <!-- TAB: Nuevo ticket -->
-    <div class="tab-content" id="tab-nuevo">
-      <div class="card" style="max-width:640px;">
-        <div class="card-header"><span class="card-title">Abrir nuevo ticket de soporte</span></div>
-        <div class="card-body">
-          <div class="ticket-form">
-            <div class="form-group">
-              <label class="form-label">Asunto *</label>
-              <input class="form-input" type="text" placeholder="Describe brevemente el problema...">
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-              <div class="form-group">
-                <label class="form-label">Categoría</label>
-                <select class="form-input">
-                  <option>Hardware</option>
-                  <option>Software</option>
-                  <option>Red / Conectividad</option>
-                  <option>Seguridad</option>
-                  <option>Sistemas / Dominio</option>
-                  <option>Otro</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Prioridad</label>
-                <select class="form-input">
-                  <option>Baja</option>
-                  <option>Media</option>
-                  <option>Alta</option>
-                  <option>Urgente</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Descripción detallada *</label>
-              <textarea class="form-input" rows="5" placeholder="Explica el problema con el mayor detalle posible: qué ocurre, desde cuándo, si afecta a más usuarios..." style="resize:vertical;"></textarea>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Equipo afectado</label>
-              <input class="form-input" type="text" placeholder="Nombre del equipo o IP (ej: PC-VEN-03 / 192.168.1.45)">
-            </div>
-            <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:8px;">
-              <button class="btn btn-ghost" onclick="openTab('tickets', document.querySelector('[data-tab=tickets]'))">Cancelar</button>
-              <button class="btn btn-primary" onclick="submitTicket()">Enviar ticket</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB: Estado de servicios -->
+    <!-- TAB SERVICIOS -->
     <div class="tab-content" id="tab-servicios">
       <div class="srv-grid">
-        <div class="srv-card">
-          <div class="srv-icon icon-box-green"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#15803d" stroke-width="1.7"><rect x="2" y="3" width="16" height="11" rx="2"/><path d="M7 18h6M10 14v4"/></svg></div>
-          <div class="srv-info">
-            <div class="srv-name">Servidor Web (Apache)</div>
-            <div class="srv-detail">192.168.1.10 · Puerto 80/443</div>
-            <div class="uptime-bar"><div class="uptime-fill" style="width:99%"></div></div>
-            <div class="srv-uptime">Uptime: 99.9% · Últ. reinicio: 15/03</div>
-          </div>
-          <span class="badge badge-green">Online</span>
-        </div>
-        <div class="srv-card">
-          <div class="srv-icon icon-box-green"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#15803d" stroke-width="1.7"><circle cx="10" cy="10" r="8"/><path d="M2 10h16M10 2a14 14 0 010 16M10 2a14 14 0 000 16"/></svg></div>
-          <div class="srv-info">
-            <div class="srv-name">DNS (Bind9)</div>
-            <div class="srv-detail">192.168.1.10 · Puerto 53</div>
-            <div class="uptime-bar"><div class="uptime-fill" style="width:100%"></div></div>
-            <div class="srv-uptime">Uptime: 100% · Últ. reinicio: 01/03</div>
-          </div>
-          <span class="badge badge-green">Online</span>
-        </div>
-        <div class="srv-card">
-          <div class="srv-icon icon-box-green"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#15803d" stroke-width="1.7"><rect x="3" y="6" width="14" height="10" rx="2"/><path d="M7 6V4a3 3 0 016 0v2"/></svg></div>
-          <div class="srv-info">
-            <div class="srv-name">DHCP</div>
-            <div class="srv-detail">192.168.1.10 · Puerto 67/68</div>
-            <div class="uptime-bar"><div class="uptime-fill" style="width:99%"></div></div>
-            <div class="srv-uptime">Uptime: 99.8% · IPs asignadas: 38/40</div>
-          </div>
-          <span class="badge badge-green">Online</span>
-        </div>
-        <div class="srv-card">
-          <div class="srv-icon icon-box-yellow"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#92400e" stroke-width="1.7"><path d="M3 7v9a1 1 0 001 1h12a1 1 0 001-1V7M1 7h18M7 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/></svg></div>
-          <div class="srv-info">
-            <div class="srv-name">FTP / SFTP (vsftpd)</div>
-            <div class="srv-detail">192.168.1.10 · Puerto 21/22</div>
-            <div class="uptime-bar"><div class="uptime-fill" style="width:65%;background:var(--warning)"></div></div>
-            <div class="srv-uptime">En mantenimiento programado</div>
-          </div>
-          <span class="badge badge-yellow">Mantenimiento</span>
-        </div>
-        <div class="srv-card">
-          <div class="srv-icon icon-box-blue"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1e40af" stroke-width="1.7"><rect x="2" y="5" width="16" height="12" rx="2"/><path d="M6 9h8M6 13h5"/></svg></div>
-          <div class="srv-info">
-            <div class="srv-name">Dominio Active Directory</div>
-            <div class="srv-detail">SRV-01 · techcorp.local</div>
-            <div class="uptime-bar"><div class="uptime-fill" style="width:100%"></div></div>
-            <div class="srv-uptime">Uptime: 100% · 40 usuarios activos</div>
-          </div>
-          <span class="badge badge-green">Online</span>
-        </div>
-        <div class="srv-card">
-          <div class="srv-icon icon-box-green"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#15803d" stroke-width="1.7"><path d="M4 4h12v12H4z M4 8h12M8 8v8"/></svg></div>
-          <div class="srv-info">
-            <div class="srv-name">Servidor de Backups</div>
-            <div class="srv-detail">SRV-02 · 192.168.1.11</div>
-            <div class="uptime-bar"><div class="uptime-fill" style="width:98%"></div></div>
-            <div class="srv-uptime">Últ. backup: hoy 03:00 · OK</div>
-          </div>
-          <span class="badge badge-green">Online</span>
-        </div>
+        <div class="srv-card"><div class="srv-icon icon-box-green"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#15803d" stroke-width="1.7"><rect x="2" y="3" width="16" height="11" rx="2"/><path d="M7 18h6M10 14v4"/></svg></div><div class="srv-info"><div class="srv-name">Servidor Web (Apache)</div><div class="srv-detail">192.168.1.10 · Puerto 80/443</div><div class="uptime-bar"><div class="uptime-fill" style="width:99%"></div></div><div class="srv-uptime">Uptime: 99.9%</div></div><span class="badge badge-green">Online</span></div>
+        <div class="srv-card"><div class="srv-icon icon-box-green"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#15803d" stroke-width="1.7"><circle cx="10" cy="10" r="8"/><path d="M2 10h16M10 2a14 14 0 010 16M10 2a14 14 0 000 16"/></svg></div><div class="srv-info"><div class="srv-name">DNS (Bind9)</div><div class="srv-detail">192.168.1.10 · Puerto 53</div><div class="uptime-bar"><div class="uptime-fill" style="width:100%"></div></div><div class="srv-uptime">Uptime: 100%</div></div><span class="badge badge-green">Online</span></div>
+        <div class="srv-card"><div class="srv-icon icon-box-green"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#15803d" stroke-width="1.7"><rect x="3" y="6" width="14" height="10" rx="2"/><path d="M7 6V4a3 3 0 016 0v2"/></svg></div><div class="srv-info"><div class="srv-name">DHCP</div><div class="srv-detail">192.168.1.10 · Puerto 67/68</div><div class="uptime-bar"><div class="uptime-fill" style="width:99%"></div></div><div class="srv-uptime">IPs asignadas: 38/40</div></div><span class="badge badge-green">Online</span></div>
+        <div class="srv-card"><div class="srv-icon icon-box-yellow"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#92400e" stroke-width="1.7"><path d="M3 7v9a1 1 0 001 1h12a1 1 0 001-1V7M1 7h18"/></svg></div><div class="srv-info"><div class="srv-name">FTP / SFTP (vsftpd)</div><div class="srv-detail">192.168.1.10 · Puerto 21/22</div><div class="uptime-bar"><div class="uptime-fill" style="width:65%;background:var(--warning)"></div></div><div class="srv-uptime">En mantenimiento</div></div><span class="badge badge-yellow">Mantenimiento</span></div>
+        <div class="srv-card"><div class="srv-icon icon-box-blue"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1e40af" stroke-width="1.7"><rect x="2" y="5" width="16" height="12" rx="2"/><path d="M6 9h8M6 13h5"/></svg></div><div class="srv-info"><div class="srv-name">Dominio Active Directory</div><div class="srv-detail">SRV-01 · techcorp.local</div><div class="uptime-bar"><div class="uptime-fill" style="width:100%"></div></div><div class="srv-uptime">40 usuarios activos</div></div><span class="badge badge-green">Online</span></div>
+        <div class="srv-card"><div class="srv-icon icon-box-green"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#15803d" stroke-width="1.7"><path d="M4 4h12v12H4z M4 8h12M8 8v8"/></svg></div><div class="srv-info"><div class="srv-name">Servidor de Backups</div><div class="srv-detail">SRV-02 · 192.168.1.11</div><div class="uptime-bar"><div class="uptime-fill" style="width:98%"></div></div><div class="srv-uptime">Últ. backup: hoy 03:00 · OK</div></div><span class="badge badge-green">Online</span></div>
       </div>
     </div>
 
-    <!-- TAB: Herramientas -->
+    <!-- TAB HERRAMIENTAS -->
     <div class="tab-content" id="tab-herramientas">
       <div class="tools-grid">
-        <a class="tool-card" href="#">
-          <div class="icon-box icon-box-blue"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#1e40af" stroke-width="1.7"><rect x="2" y="3" width="16" height="11" rx="2"/><path d="M7 18h6M10 14v4"/></svg></div>
-          <div><div class="tool-name">Panel web Apache</div><div class="tool-desc">Administración del servidor HTTP</div><div class="tool-url">http://192.168.1.10/admin</div></div>
-        </a>
-        <a class="tool-card" href="#">
-          <div class="icon-box icon-box-green"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#15803d" stroke-width="1.7"><path d="M4 4h12v12H4z M4 8h12M8 8v8"/></svg></div>
-          <div><div class="tool-name">Panel de backups</div><div class="tool-desc">Gestión y estado de copias de seguridad</div><div class="tool-url">http://192.168.1.11/backups</div></div>
-        </a>
-        <a class="tool-card" href="#">
-          <div class="icon-box icon-box-teal"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0e7490" stroke-width="1.7"><circle cx="10" cy="10" r="8"/><path d="M2 10h16M10 2a14 14 0 010 16"/></svg></div>
-          <div><div class="tool-name">Consola DNS</div><div class="tool-desc">Gestión de zonas y registros DNS</div><div class="tool-url">http://192.168.1.10/dns</div></div>
-        </a>
-        <a class="tool-card" href="#">
-          <div class="icon-box icon-box-yellow"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#92400e" stroke-width="1.7"><rect x="3" y="6" width="14" height="10" rx="2"/><path d="M7 6V4a3 3 0 016 0v2"/></svg></div>
-          <div><div class="tool-name">Gestión DHCP</div><div class="tool-desc">IPs asignadas y reservas</div><div class="tool-url">http://192.168.1.10/dhcp</div></div>
-        </a>
-        <a class="tool-card" href="#">
-          <div class="icon-box" style="background:#ede9fe;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#5b21b6" stroke-width="1.7"><path d="M10 2L2 7v11h16V7L10 2z"/></svg></div>
-          <div><div class="tool-name">Directorio Activo (AD)</div><div class="tool-desc">Usuarios, grupos y políticas GPO</div><div class="tool-url">\\SRV-01\ADUC</div></div>
-        </a>
-        <a class="tool-card" href="#">
-          <div class="icon-box icon-box-red"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#991b1b" stroke-width="1.7"><path d="M10 2a6 6 0 016 6c0 3.5 1.5 5 1.5 5H2.5S4 11.5 4 8a6 6 0 016-6z"/><path d="M8.5 17a1.5 1.5 0 003 0"/></svg></div>
-          <div><div class="tool-name">Monitorización (Zabbix)</div><div class="tool-desc">Alertas y métricas en tiempo real</div><div class="tool-url">http://192.168.1.10/zabbix</div></div>
-        </a>
+        <a class="tool-card" href="#"><div class="icon-box icon-box-blue"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#1e40af" stroke-width="1.7"><rect x="2" y="3" width="16" height="11" rx="2"/><path d="M7 18h6M10 14v4"/></svg></div><div><div class="tool-name">Panel web Apache</div><div class="tool-desc">Administración del servidor HTTP</div><div class="tool-url">http://192.168.1.10/admin</div></div></a>
+        <a class="tool-card" href="#"><div class="icon-box icon-box-green"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#15803d" stroke-width="1.7"><path d="M4 4h12v12H4z M4 8h12M8 8v8"/></svg></div><div><div class="tool-name">Panel de backups</div><div class="tool-desc">Gestión y estado de copias de seguridad</div><div class="tool-url">http://192.168.1.11/backups</div></div></a>
+        <a class="tool-card" href="#"><div class="icon-box icon-box-teal"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0e7490" stroke-width="1.7"><circle cx="10" cy="10" r="8"/><path d="M2 10h16M10 2a14 14 0 010 16"/></svg></div><div><div class="tool-name">Consola DNS</div><div class="tool-desc">Gestión de zonas y registros DNS</div><div class="tool-url">http://192.168.1.10/dns</div></div></a>
+        <a class="tool-card" href="#"><div class="icon-box icon-box-yellow"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#92400e" stroke-width="1.7"><rect x="3" y="6" width="14" height="10" rx="2"/><path d="M7 6V4a3 3 0 016 0v2"/></svg></div><div><div class="tool-name">Gestión DHCP</div><div class="tool-desc">IPs asignadas y reservas</div><div class="tool-url">http://192.168.1.10/dhcp</div></div></a>
+        <a class="tool-card" href="#"><div class="icon-box" style="background:#ede9fe;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#5b21b6" stroke-width="1.7"><path d="M10 2L2 7v11h16V7L10 2z"/></svg></div><div><div class="tool-name">Directorio Activo (AD)</div><div class="tool-desc">Usuarios, grupos y políticas GPO</div><div class="tool-url">\\SRV-01\ADUC</div></div></a>
+        <a class="tool-card" href="#"><div class="icon-box icon-box-red"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#991b1b" stroke-width="1.7"><path d="M10 2a6 6 0 016 6c0 3.5 1.5 5 1.5 5H2.5S4 11.5 4 8a6 6 0 016-6z"/><path d="M8.5 17a1.5 1.5 0 003 0"/></svg></div><div><div class="tool-name">Monitorización (Zabbix)</div><div class="tool-desc">Alertas y métricas en tiempo real</div><div class="tool-url">http://192.168.1.10/zabbix</div></div></a>
       </div>
     </div>
-
   </div>
 </div>
 
+<!-- ── MODAL NUEVO TICKET ── -->
+<div class="modal-overlay" id="modal-overlay" onclick="cerrarModalFuera(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">🎫 Nuevo ticket de soporte</span>
+      <button class="modal-close" onclick="cerrarModal()">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Asunto *</label>
+      <input class="form-input" type="text" id="t-asunto" placeholder="Describe brevemente el problema..." style="padding-left:14px;">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="form-group">
+        <label class="form-label">Categoría *</label>
+        <select class="form-input" id="t-cat" style="padding-left:14px;">
+          <option value="">Selecciona...</option>
+          <option>Hardware</option>
+          <option>Software</option>
+          <option>Red / Conectividad</option>
+          <option>Seguridad</option>
+          <option>Sistemas / Dominio</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Prioridad *</label>
+        <select class="form-input" id="t-prioridad" style="padding-left:14px;">
+          <option value="baja">Baja</option>
+          <option value="media">Media</option>
+          <option value="alta">Alta</option>
+          <option value="urgente">Urgente</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Descripción detallada *</label>
+      <textarea class="form-input" id="t-desc" rows="4" placeholder="Explica el problema: qué ocurre, desde cuándo, si afecta a más usuarios..." style="padding-left:14px;resize:vertical;"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Equipo afectado</label>
+      <input class="form-input" type="text" id="t-equipo" placeholder="Ej: PC-VEN-03 o 192.168.1.45" style="padding-left:14px;">
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="crearTicket()">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 4v12M4 10h12"/></svg>
+        Enviar ticket
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="success-toast" id="toast">
+  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="10" r="8"/><path d="M7 10l2 2 4-4"/></svg>
+  <span id="toast-msg">¡Ticket creado!</span>
+</div>
+
 <script>
-function openTab(id, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.it-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  if (btn) btn.classList.add('active');
-}
-function filterTickets(status, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    b.style.background = 'var(--surface)';
-    b.style.color = 'var(--text-2)';
-    b.style.borderColor = 'var(--border)';
-  });
-  btn.style.background = 'var(--accent)';
-  btn.style.color = '#fff';
-  btn.style.borderColor = 'var(--accent)';
-  document.querySelectorAll('#ticket-list .ticket-row').forEach(r => {
-    r.style.display = (status === 'todos' || r.dataset.status === status) ? '' : 'none';
-  });
-}
-function submitTicket() {
-  alert('✅ Ticket enviado. Recibirás confirmación por correo en breve.');
-  openTab('tickets', document.querySelector('[data-tab=tickets]'));
-}
+  let ticketCounter = 43;
+
+  function openTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.it-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  function filterTickets(status, btn) {
+    document.querySelectorAll('#filter-btns button').forEach(b => {
+      b.style.background = 'var(--surface)'; b.style.color = 'var(--text-2)'; b.style.borderColor = 'var(--border)';
+    });
+    btn.style.background = 'var(--accent)'; btn.style.color = '#fff'; btn.style.borderColor = 'var(--accent)';
+    document.querySelectorAll('#ticket-list .ticket-row').forEach(r => {
+      r.style.display = (status === 'todos' || r.dataset.status === status) ? '' : 'none';
+    });
+  }
+
+  function abrirModal() {
+    document.getElementById('modal-overlay').classList.add('open');
+    // Autorellenar solicitante
+    const user = sessionStorage.getItem('userName') || '';
+    if (!document.getElementById('t-solicitante-hint')) {
+      const hint = document.createElement('div');
+      hint.id = 't-solicitante-hint';
+      hint.style.cssText = 'font-size:12px;color:var(--text-3);margin-top:6px;font-family:"DM Mono",monospace;';
+      hint.textContent = '👤 Solicitante: ' + user;
+      document.getElementById('t-asunto').parentElement.parentElement.insertBefore(hint, document.getElementById('t-asunto').parentElement);
+    }
+  }
+  function cerrarModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+  function cerrarModalFuera(e) { if (e.target === document.getElementById('modal-overlay')) cerrarModal(); }
+
+  const prioConfig = {
+    baja:    { dot: 'p-low',    badge: '<span class="badge badge-green">Baja</span>',   status: '<span class="badge" style="background:#e0e7ff;color:#3730a3;">Abierto</span>' },
+    media:   { dot: 'p-medium', badge: '<span class="badge badge-yellow">Media</span>', status: '<span class="badge" style="background:#e0e7ff;color:#3730a3;">Abierto</span>' },
+    alta:    { dot: 'p-high',   badge: '<span class="badge badge-red">Alta</span>',     status: '<span class="badge" style="background:#e0e7ff;color:#3730a3;">Abierto</span>' },
+    urgente: { dot: 'p-high',   badge: '<span class="badge badge-red">Urgente</span>',  status: '<span class="badge" style="background:#e0e7ff;color:#3730a3;">Abierto</span>' },
+  };
+
+  function crearTicket() {
+    const asunto   = document.getElementById('t-asunto').value.trim();
+    const cat      = document.getElementById('t-cat').value;
+    const prioridad = document.getElementById('t-prioridad').value;
+    const desc     = document.getElementById('t-desc').value.trim();
+    const equipo   = document.getElementById('t-equipo').value.trim();
+    const user     = sessionStorage.getItem('userName') || 'Usuario';
+
+    if (!asunto || !cat || !desc) {
+      alert('Por favor rellena el asunto, categoría y descripción.');
+      return;
+    }
+
+    const id  = '#0' + String(ticketCounter++).padStart(3, '0');
+    const hoy = new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'2-digit' });
+    const cfg = prioConfig[prioridad];
+
+    const row = document.createElement('div');
+    row.className = 'ticket-row';
+    row.dataset.status = 'abierto';
+    row.innerHTML = `
+      <span class="priority-dot ${cfg.dot}"></span>
+      <span class="ticket-id">${id}</span>
+      <div class="ticket-info">
+        <div class="ticket-title">${asunto}</div>
+        <div class="ticket-meta">${cat}${equipo ? ' · ' + equipo : ''}</div>
+      </div>
+      <span style="font-size:12px;color:var(--text-2);">${user}</span>
+      ${cfg.badge}
+      ${cfg.status}
+      <span class="text-xs text-faint">${hoy}</span>`;
+
+    document.getElementById('ticket-list').prepend(row);
+
+    // Actualizar contadores
+    const abiertos = document.querySelectorAll('#ticket-list .ticket-row[data-status="abierto"]').length;
+    document.getElementById('count-abiertos').textContent = abiertos;
+    document.getElementById('badge-count').textContent = document.querySelectorAll('#ticket-list .ticket-row').length;
+
+    // Limpiar y cerrar
+    ['t-asunto','t-cat','t-prioridad','t-desc','t-equipo'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el.tagName === 'SELECT') el.selectedIndex = 0; else el.value = '';
+    });
+    cerrarModal();
+    mostrarToast('¡Ticket ' + id + ' creado correctamente!');
+
+    // Cambiar a tab tickets si no estamos ahí
+    openTab('tickets', document.querySelector('[data-tab=tickets]'));
+  }
+
+  function mostrarToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
 </script>
 </body>
 </html>

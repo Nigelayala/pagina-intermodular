@@ -6,121 +6,66 @@
   <title>Intranet — Noticias</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .filter-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-    .filter-btn {
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      font-size: 13px;
-      color: var(--text-2);
-      cursor: pointer;
-      transition: all 0.15s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .filter-bar { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+    .filter-btn { padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:var(--surface); font-size:13px; color:var(--text-2); cursor:pointer; transition:all .15s; font-family:'DM Sans',sans-serif; }
+    .filter-btn:hover { border-color:var(--accent); color:var(--accent); }
+    .filter-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
 
-    .news-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
+    .news-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .news-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow); transition:all .18s; display:flex; flex-direction:column; }
+    .news-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); }
+    .news-card-accent { height:5px; }
+    .nc-urgente   { background:var(--danger); }
+    .nc-seguridad { background:var(--warning); }
+    .nc-rrhh      { background:var(--success); }
+    .nc-sistemas  { background:var(--accent); }
+    .nc-direccion { background:#8b5cf6; }
+    .nc-general   { background:var(--info); }
+    .news-card-body { padding:20px; flex:1; display:flex; flex-direction:column; gap:10px; }
+    .news-card-meta { display:flex; align-items:center; gap:8px; }
+    .news-card-date { font-size:11px; color:var(--text-3); font-family:'DM Mono',monospace; }
+    .news-card-title { font-size:15px; font-weight:600; color:var(--text-1); line-height:1.4; }
+    .news-card-desc  { font-size:13px; color:var(--text-2); line-height:1.6; flex:1; }
+    .news-card-footer { padding:14px 20px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .news-card.featured { grid-column:1/-1; flex-direction:row; align-items:stretch; }
+    .news-card.featured .news-card-accent { width:6px; height:auto; border-radius:0; }
+    .news-card.featured .news-card-body { flex-direction:row; align-items:center; gap:20px; }
+    .news-card.featured .news-card-title { font-size:17px; }
+    .news-card.featured .featured-badge { flex-shrink:0; background:var(--danger); color:#fff; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; }
+    .news-card.featured .featured-content { flex:1; }
+    .urgente-banner { background:#fff7f7; border:1px solid #fecaca; border-radius:var(--radius-lg); padding:14px 20px; display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+    .urgente-icon { width:32px; height:32px; background:var(--danger); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 
-    .news-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: all 0.18s;
-      display: flex;
-      flex-direction: column;
+    /* ── MODAL ── */
+    .modal-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(15,19,34,0.5); backdrop-filter:blur(4px);
+      z-index:1000; align-items:center; justify-content:center; padding:20px;
     }
-    .news-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .modal-overlay.open { display:flex; }
+    .modal {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:20px; padding:32px; width:100%; max-width:560px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.2);
+      animation:slideUp .2s ease;
+    }
+    @keyframes slideUp { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+    .modal-title { font-size:17px; font-weight:600; color:var(--text-1); }
+    .modal-close { width:32px; height:32px; border:none; background:var(--surface-2); border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-3); transition:all .15s; }
+    .modal-close:hover { background:var(--surface-3); color:var(--text-1); }
+    .modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; }
 
-    .news-card-accent {
-      height: 5px;
+    .success-toast {
+      position:fixed; bottom:24px; right:24px;
+      background:#dcfce7; border:1px solid #86efac; color:#15803d;
+      padding:12px 18px; border-radius:12px; font-size:14px; font-weight:500;
+      display:flex; align-items:center; gap:8px;
+      box-shadow:0 4px 16px rgba(0,0,0,0.1);
+      z-index:2000; transform:translateY(80px); opacity:0;
+      transition:all .3s ease;
     }
-    .nc-urgente   { background: var(--danger); }
-    .nc-seguridad { background: var(--warning); }
-    .nc-rrhh      { background: var(--success); }
-    .nc-sistemas  { background: var(--accent); }
-    .nc-direccion { background: #8b5cf6; }
-    .nc-general   { background: var(--info); }
-
-    .news-card-body {
-      padding: 20px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .news-card-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .news-card-date { font-size: 11px; color: var(--text-3); font-family: 'DM Mono', monospace; }
-    .news-card-title { font-size: 15px; font-weight: 600; color: var(--text-1); line-height: 1.4; }
-    .news-card-desc  { font-size: 13px; color: var(--text-2); line-height: 1.6; flex: 1; }
-    .news-card-footer {
-      padding: 14px 20px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    /* Featured big card */
-    .news-card.featured {
-      grid-column: 1 / -1;
-      flex-direction: row;
-      align-items: stretch;
-    }
-    .news-card.featured .news-card-accent {
-      width: 6px;
-      height: auto;
-      border-radius: 0;
-    }
-    .news-card.featured .news-card-body { flex-direction: row; align-items: center; gap: 20px; }
-    .news-card.featured .news-card-title { font-size: 17px; }
-    .news-card.featured .featured-badge {
-      flex-shrink: 0;
-      background: var(--danger);
-      color: #fff;
-      border-radius: 6px;
-      padding: 4px 10px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .news-card.featured .featured-content { flex: 1; }
-
-    .urgente-banner {
-      background: #fff7f7;
-      border: 1px solid #fecaca;
-      border-radius: var(--radius-lg);
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .urgente-icon {
-      width: 32px; height: 32px;
-      background: var(--danger);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
+    .success-toast.show { transform:translateY(0); opacity:1; }
   </style>
 </head>
 <body>
@@ -133,7 +78,10 @@
       <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
       <input type="text" placeholder="Buscar noticias...">
     </div>
-    <button class="btn btn-primary btn-sm">+ Nueva noticia</button>
+    <button class="btn btn-primary btn-sm" onclick="abrirModal()">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 4v12M4 10h12"/></svg>
+      Nueva noticia
+    </button>
   </header>
 
   <div class="content">
@@ -142,7 +90,6 @@
       <p>Comunicados, avisos y novedades corporativas</p>
     </div>
 
-    <!-- Urgente banner -->
     <div class="urgente-banner">
       <div class="urgente-icon">
         <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2"><path d="M10 2l8 14H2L10 2z"/><path d="M10 9v4M10 15h.01" stroke-linecap="round"/></svg>
@@ -153,130 +100,214 @@
       </div>
     </div>
 
-    <!-- Filters -->
     <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterNews('todos', this)">Todos</button>
-      <button class="filter-btn" onclick="filterNews('urgente', this)">🔴 Urgente</button>
-      <button class="filter-btn" onclick="filterNews('sistemas', this)">Sistemas</button>
-      <button class="filter-btn" onclick="filterNews('seguridad', this)">Seguridad</button>
-      <button class="filter-btn" onclick="filterNews('rrhh', this)">RR.HH.</button>
-      <button class="filter-btn" onclick="filterNews('direccion', this)">Dirección</button>
-      <button class="filter-btn" onclick="filterNews('general', this)">General</button>
+      <button class="filter-btn active" onclick="filterNews('todos',this)">Todos</button>
+      <button class="filter-btn" onclick="filterNews('urgente',this)">🔴 Urgente</button>
+      <button class="filter-btn" onclick="filterNews('sistemas',this)">Sistemas</button>
+      <button class="filter-btn" onclick="filterNews('seguridad',this)">Seguridad</button>
+      <button class="filter-btn" onclick="filterNews('rrhh',this)">RR.HH.</button>
+      <button class="filter-btn" onclick="filterNews('direccion',this)">Dirección</button>
+      <button class="filter-btn" onclick="filterNews('general',this)">General</button>
     </div>
 
-    <!-- News grid -->
     <div class="news-grid" id="news-grid">
-
-      <!-- Featured -->
       <div class="news-card featured" data-cat="sistemas urgente">
         <div class="news-card-accent nc-urgente"></div>
         <div class="news-card-body">
           <div class="featured-badge">🔴 Urgente</div>
           <div class="featured-content">
-            <div class="news-card-meta">
-              <span class="badge badge-red">Sistemas</span>
-              <span class="news-card-date">HOY · 30 MAR 2026</span>
-            </div>
+            <div class="news-card-meta"><span class="badge badge-red">Sistemas</span><span class="news-card-date">HOY · 30 MAR 2026</span></div>
             <div class="news-card-title" style="margin-top:6px;">Mantenimiento programado del servidor principal esta noche</div>
-            <div class="news-card-desc">El servidor principal (SRV-01) estará en ventana de mantenimiento desde las 22:00 hasta las 02:00 del martes. Durante ese período no estarán disponibles los servicios de dominio, carpetas compartidas ni correo interno.</div>
+            <div class="news-card-desc">El servidor principal (SRV-01) estará en ventana de mantenimiento desde las 22:00 hasta las 02:00 del martes.</div>
           </div>
         </div>
       </div>
 
-      <!-- Cards -->
       <div class="news-card" data-cat="seguridad">
         <div class="news-card-accent nc-seguridad"></div>
         <div class="news-card-body">
-          <div class="news-card-meta">
-            <span class="badge badge-yellow">Seguridad</span>
-            <span class="news-card-date">30 MAR 2026</span>
-          </div>
+          <div class="news-card-meta"><span class="badge badge-yellow">Seguridad</span><span class="news-card-date">30 MAR 2026</span></div>
           <div class="news-card-title">Nueva política de contraseñas a partir del 1 de abril</div>
-          <div class="news-card-desc">Desde el próximo martes todas las contraseñas deberán cumplir los nuevos requisitos: mínimo 12 caracteres, combinación de mayúsculas, números y símbolos, y caducidad cada 90 días.</div>
+          <div class="news-card-desc">Desde el próximo martes todas las contraseñas deberán cumplir los nuevos requisitos: mínimo 12 caracteres.</div>
         </div>
-        <div class="news-card-footer">
-          <span class="news-card-date">Publicado por: Seguridad IT</span>
-          <a href="#" class="btn btn-ghost btn-sm">Leer más</a>
-        </div>
+        <div class="news-card-footer"><span class="news-card-date">Seguridad IT</span><a href="#" class="btn btn-ghost btn-sm">Leer más</a></div>
       </div>
 
       <div class="news-card" data-cat="direccion">
         <div class="news-card-accent nc-direccion"></div>
         <div class="news-card-body">
-          <div class="news-card-meta">
-            <span class="badge" style="background:#ede9fe;color:#5b21b6;">Dirección</span>
-            <span class="news-card-date">29 MAR 2026</span>
-          </div>
+          <div class="news-card-meta"><span class="badge" style="background:#ede9fe;color:#5b21b6;">Dirección</span><span class="news-card-date">29 MAR 2026</span></div>
           <div class="news-card-title">Resultados Q1: superamos los objetivos de ventas</div>
-          <div class="news-card-desc">Cerramos el primer trimestre con un crecimiento del 18% sobre el objetivo marcado. La dirección agradece el esfuerzo de todos los departamentos. Se convoca reunión general el 2 de abril.</div>
+          <div class="news-card-desc">Cerramos el primer trimestre con un crecimiento del 18% sobre el objetivo marcado.</div>
         </div>
-        <div class="news-card-footer">
-          <span class="news-card-date">Publicado por: Dirección General</span>
-          <a href="#" class="btn btn-ghost btn-sm">Leer más</a>
-        </div>
+        <div class="news-card-footer"><span class="news-card-date">Dirección General</span><a href="#" class="btn btn-ghost btn-sm">Leer más</a></div>
       </div>
 
       <div class="news-card" data-cat="rrhh">
         <div class="news-card-accent nc-rrhh"></div>
         <div class="news-card-body">
-          <div class="news-card-meta">
-            <span class="badge badge-green">RR.HH.</span>
-            <span class="news-card-date">28 MAR 2026</span>
-          </div>
+          <div class="news-card-meta"><span class="badge badge-green">RR.HH.</span><span class="news-card-date">28 MAR 2026</span></div>
           <div class="news-card-title">Formulario de solicitud de vacaciones actualizado</div>
-          <div class="news-card-desc">Ya está disponible en la sección de Documentos el nuevo formulario de solicitud de vacaciones para el período estival. El plazo de solicitud finaliza el 15 de abril.</div>
+          <div class="news-card-desc">Ya está disponible el nuevo formulario de solicitud de vacaciones para el período estival.</div>
         </div>
-        <div class="news-card-footer">
-          <span class="news-card-date">Publicado por: RR.HH.</span>
-          <a href="#" class="btn btn-ghost btn-sm">Leer más</a>
-        </div>
+        <div class="news-card-footer"><span class="news-card-date">RR.HH.</span><a href="#" class="btn btn-ghost btn-sm">Leer más</a></div>
       </div>
 
       <div class="news-card" data-cat="sistemas">
         <div class="news-card-accent nc-sistemas"></div>
         <div class="news-card-body">
-          <div class="news-card-meta">
-            <span class="badge badge-blue">Sistemas</span>
-            <span class="news-card-date">27 MAR 2026</span>
-          </div>
+          <div class="news-card-meta"><span class="badge badge-blue">Sistemas</span><span class="news-card-date">27 MAR 2026</span></div>
           <div class="news-card-title">Actualización de drivers en equipos del departamento de Ventas</div>
-          <div class="news-card-desc">Durante la próxima semana se actualizarán los drivers y firmware de los 12 equipos del área de Ventas. El proceso se realizará fuera del horario laboral.</div>
+          <div class="news-card-desc">Durante la próxima semana se actualizarán los drivers y firmware de los 12 equipos del área de Ventas.</div>
         </div>
-        <div class="news-card-footer">
-          <span class="news-card-date">Publicado por: Soporte IT</span>
-          <a href="#" class="btn btn-ghost btn-sm">Leer más</a>
-        </div>
+        <div class="news-card-footer"><span class="news-card-date">Soporte IT</span><a href="#" class="btn btn-ghost btn-sm">Leer más</a></div>
       </div>
 
       <div class="news-card" data-cat="general">
         <div class="news-card-accent nc-general"></div>
         <div class="news-card-body">
-          <div class="news-card-meta">
-            <span class="badge badge-teal">General</span>
-            <span class="news-card-date">25 MAR 2026</span>
-          </div>
+          <div class="news-card-meta"><span class="badge badge-teal">General</span><span class="news-card-date">25 MAR 2026</span></div>
           <div class="news-card-title">Bienvenida a los 3 nuevos compañeros del equipo de Operaciones</div>
-          <div class="news-card-desc">Esta semana se han incorporado tres nuevos miembros al departamento de Operaciones. Podéis encontrar su información en el directorio de empleados.</div>
+          <div class="news-card-desc">Esta semana se han incorporado tres nuevos miembros al departamento de Operaciones.</div>
         </div>
-        <div class="news-card-footer">
-          <span class="news-card-date">Publicado por: RR.HH.</span>
-          <a href="#" class="btn btn-ghost btn-sm">Leer más</a>
-        </div>
+        <div class="news-card-footer"><span class="news-card-date">RR.HH.</span><a href="#" class="btn btn-ghost btn-sm">Leer más</a></div>
       </div>
-
     </div>
   </div>
 </div>
 
+<!-- ── MODAL NUEVA NOTICIA ── -->
+<div class="modal-overlay" id="modal-overlay" onclick="cerrarModalFuera(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">📢 Nueva noticia</span>
+      <button class="modal-close" onclick="cerrarModal()">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Título *</label>
+      <input class="form-input" type="text" id="n-titulo" placeholder="Escribe el título de la noticia..." style="padding-left:14px;">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="form-group">
+        <label class="form-label">Categoría *</label>
+        <select class="form-input" id="n-cat" style="padding-left:14px;">
+          <option value="">Selecciona...</option>
+          <option value="urgente">🔴 Urgente</option>
+          <option value="sistemas">Sistemas</option>
+          <option value="seguridad">Seguridad</option>
+          <option value="rrhh">RR.HH.</option>
+          <option value="direccion">Dirección</option>
+          <option value="general">General</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Autor / Departamento</label>
+        <input class="form-input" type="text" id="n-autor" placeholder="Ej: Soporte IT" style="padding-left:14px;">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Descripción *</label>
+      <textarea class="form-input" id="n-desc" rows="4" placeholder="Escribe el contenido de la noticia..." style="padding-left:14px;resize:vertical;"></textarea>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="publicarNoticia()">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 4v12M4 10h12"/></svg>
+        Publicar noticia
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="success-toast" id="toast">
+  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="10" r="8"/><path d="M7 10l2 2 4-4"/></svg>
+  <span id="toast-msg">¡Noticia publicada!</span>
+</div>
+
 <script>
-function filterNews(cat, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.news-card').forEach(card => {
-    const cats = card.dataset.cat || '';
-    card.style.display = (cat === 'todos' || cats.includes(cat)) ? '' : 'none';
-  });
-}
+  function filterNews(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.news-card').forEach(card => {
+      const cats = card.dataset.cat || '';
+      card.style.display = (cat === 'todos' || cats.includes(cat)) ? '' : 'none';
+    });
+  }
+
+  function abrirModal() {
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+  function cerrarModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+  function cerrarModalFuera(e) {
+    if (e.target === document.getElementById('modal-overlay')) cerrarModal();
+  }
+
+  const catColors = {
+    urgente: { clase: 'nc-urgente', badge: '<span class="badge badge-red">Urgente</span>' },
+    sistemas: { clase: 'nc-sistemas', badge: '<span class="badge badge-blue">Sistemas</span>' },
+    seguridad: { clase: 'nc-seguridad', badge: '<span class="badge badge-yellow">Seguridad</span>' },
+    rrhh: { clase: 'nc-rrhh', badge: '<span class="badge badge-green">RR.HH.</span>' },
+    direccion: { clase: 'nc-direccion', badge: '<span class="badge" style="background:#ede9fe;color:#5b21b6;">Dirección</span>' },
+    general: { clase: 'nc-general', badge: '<span class="badge badge-teal">General</span>' },
+  };
+
+  function publicarNoticia() {
+    const titulo = document.getElementById('n-titulo').value.trim();
+    const cat    = document.getElementById('n-cat').value;
+    const autor  = document.getElementById('n-autor').value.trim() || sessionStorage.getItem('userName') || 'Anónimo';
+    const desc   = document.getElementById('n-desc').value.trim();
+
+    if (!titulo || !cat || !desc) {
+      alert('Por favor rellena el título, categoría y descripción.');
+      return;
+    }
+
+    const info = catColors[cat];
+    const hoy  = new Date().toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' }).toUpperCase();
+
+    const card = document.createElement('div');
+    card.className = 'news-card';
+    card.dataset.cat = cat;
+    card.innerHTML = `
+      <div class="news-card-accent ${info.clase}"></div>
+      <div class="news-card-body">
+        <div class="news-card-meta">${info.badge}<span class="news-card-date">HOY · ${hoy}</span></div>
+        <div class="news-card-title">${titulo}</div>
+        <div class="news-card-desc">${desc}</div>
+      </div>
+      <div class="news-card-footer">
+        <span class="news-card-date">${autor}</span>
+        <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="this.closest('.news-card').remove()">Eliminar</button>
+      </div>`;
+
+    document.getElementById('news-grid').prepend(card);
+
+    // Limpiar y cerrar
+    document.getElementById('n-titulo').value = '';
+    document.getElementById('n-cat').value = '';
+    document.getElementById('n-autor').value = '';
+    document.getElementById('n-desc').value = '';
+    cerrarModal();
+    mostrarToast('¡Noticia publicada correctamente!');
+  }
+
+  function mostrarToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
 </script>
 </body>
 </html>

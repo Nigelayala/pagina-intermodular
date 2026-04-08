@@ -7,8 +7,6 @@
     return;
   }
 
-
-  
   const userName = sessionStorage.getItem('userName') || 'Usuario';
   const userRole = sessionStorage.getItem('userRole') || 'Empleado';
   const initials = userName.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
@@ -47,6 +45,7 @@
     { href: 'directorio.html',   icon: '<svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3"/><path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>', label: 'Directorio' },
     { href: 'documentos.html',   icon: '<svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h7l4 4v12a1 1 0 01-1 1H5a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M12 2v4h4M7 9h6M7 12h6M7 15h4"/></svg>', label: 'Documentos' },
     { href: 'servicios-it.html', icon: '<svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="16" height="11" rx="2"/><path d="M7 18h6M10 14v4"/></svg>', label: 'Servicios IT' },
+    { href: 'admin-usuarios.html', icon: '<svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="8" r="3"/><path d="M1 17c0-3 2.7-5 6-5"/><path d="M15 11v6M12 14h6"/></svg>', label: 'Usuarios' },
   ];
 
   document.body.insertAdjacentHTML('afterbegin', `
