@@ -7,6 +7,8 @@
     return;
   }
 
+
+  
   const userName = sessionStorage.getItem('userName') || 'Usuario';
   const userRole = sessionStorage.getItem('userRole') || 'Empleado';
   const initials = userName.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();

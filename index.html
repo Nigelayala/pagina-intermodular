@@ -154,7 +154,7 @@
     <!-- Welcome -->
     <div class="welcome-banner">
       <div class="welcome-text">
-        <h2>Buenos días, Administrador 👋</h2>
+        <h2 id="welcome-msg">Bienvenido 👋</h2>
         <p>Bienvenido a la intranet corporativa de TechCorp S.L.</p>
       </div>
       <div class="welcome-date" id="date-display">
@@ -294,6 +294,13 @@
 </div>
 
 <script>
+  // Saludo dinámico
+  const userName = sessionStorage.getItem('userName') || 'Usuario';
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Buenos días' : hour < 20 ? 'Buenas tardes' : 'Buenas noches';
+  document.getElementById('welcome-msg').textContent = greeting + ', ' + userName + ' 👋';
+
+  // Fecha (esto ya lo tenías)
   const now = new Date();
   const days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
