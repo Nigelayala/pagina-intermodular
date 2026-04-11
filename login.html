@@ -209,8 +209,61 @@
 </div>
 
 <script>
-  function getUsers(){const s=localStorage.getItem('intranet_users');const b=[{user:'admin',pass:'admin123',name:'Administrador',role:'Administrador'},{user:'usuario',pass:'1234',name:'Usuario Demo',role:'Empleado'},{user:'l.martinez@techcorp.es',pass:'1234',name:'Laura Martínez',role:'Administración'}];return s?[...b,...JSON.parse(s)]:b;}
-  function saveUser(u){const s=JSON.parse(localStorage.getItem('intranet_users')||'[]');s.push(u);localStorage.setItem('intranet_users',JSON.stringify(s));}
+  function getUsers(){
+    const s=localStorage.getItem('all_users');
+    if(s)return JSON.parse(s);
+    const TODAY=new Date().toDateString();
+    const base=[
+      {id:'u1',user:'admin',pass:'admin123',name:'Administrador',role:'Administrador',created:TODAY},
+      // Administración
+      {id:'a1',user:'l.martinez@techcorp.es',pass:'1234',name:'Laura Martínez',role:'Administración',created:TODAY},
+      {id:'a2',user:'c.ruiz@techcorp.es',pass:'1234',name:'Carlos Ruiz',role:'Administración',created:TODAY},
+      {id:'a3',user:'a.garcia@techcorp.es',pass:'1234',name:'Ana García',role:'Administración',created:TODAY},
+      {id:'a4',user:'p.soto@techcorp.es',pass:'1234',name:'Pedro Soto',role:'Administración',created:TODAY},
+      {id:'a5',user:'m.iglesias@techcorp.es',pass:'1234',name:'María Iglesias',role:'Administración',created:TODAY},
+      {id:'a6',user:'j.blanco@techcorp.es',pass:'1234',name:'Jorge Blanco',role:'Administración',created:TODAY},
+      {id:'a7',user:'l.vega@techcorp.es',pass:'1234',name:'Lucía Vega',role:'Administración',created:TODAY},
+      {id:'a8',user:'r.molina@techcorp.es',pass:'1234',name:'Raúl Molina',role:'Administración',created:TODAY},
+      {id:'a9',user:'t.campos@techcorp.es',pass:'1234',name:'Teresa Campos',role:'Administración',created:TODAY},
+      {id:'a10',user:'a.prieto@techcorp.es',pass:'1234',name:'Álvaro Prieto',role:'Administración',created:TODAY},
+      // Ventas
+      {id:'v1',user:'m.torres@techcorp.es',pass:'1234',name:'Miguel Torres',role:'Ventas',created:TODAY},
+      {id:'v2',user:'s.lopez@techcorp.es',pass:'1234',name:'Sofía López',role:'Ventas',created:TODAY},
+      {id:'v3',user:'p.sanchez@techcorp.es',pass:'1234',name:'Pablo Sánchez',role:'Ventas',created:TODAY},
+      {id:'v4',user:'c.delgado@techcorp.es',pass:'1234',name:'Carmen Delgado',role:'Ventas',created:TODAY},
+      {id:'v5',user:'j.morales@techcorp.es',pass:'1234',name:'Javier Morales',role:'Ventas',created:TODAY},
+      {id:'v6',user:'n.castillo@techcorp.es',pass:'1234',name:'Nuria Castillo',role:'Ventas',created:TODAY},
+      {id:'v7',user:'d.romero@techcorp.es',pass:'1234',name:'Diego Romero',role:'Ventas',created:TODAY},
+      {id:'v8',user:'p.gil@techcorp.es',pass:'1234',name:'Patricia Gil',role:'Ventas',created:TODAY},
+      {id:'v9',user:'a.navarro@techcorp.es',pass:'1234',name:'Andrés Navarro',role:'Ventas',created:TODAY},
+      {id:'v10',user:'c.herrera@techcorp.es',pass:'1234',name:'Cristina Herrera',role:'Ventas',created:TODAY},
+      // Operaciones
+      {id:'o1',user:'e.fernandez@techcorp.es',pass:'1234',name:'Elena Fernández',role:'Operaciones',created:TODAY},
+      {id:'o2',user:'d.moreno@techcorp.es',pass:'1234',name:'David Moreno',role:'Operaciones',created:TODAY},
+      {id:'o3',user:'i.serrano@techcorp.es',pass:'1234',name:'Isabel Serrano',role:'Operaciones',created:TODAY},
+      {id:'o4',user:'r.jimenez@techcorp.es',pass:'1234',name:'Rubén Jiménez',role:'Operaciones',created:TODAY},
+      {id:'o5',user:'m.pena@techcorp.es',pass:'1234',name:'Marta Peña',role:'Operaciones',created:TODAY},
+      {id:'o6',user:'f.ortega@techcorp.es',pass:'1234',name:'Fernando Ortega',role:'Operaciones',created:TODAY},
+      {id:'o7',user:'s.ramos@techcorp.es',pass:'1234',name:'Silvia Ramos',role:'Operaciones',created:TODAY},
+      {id:'o8',user:'h.vargas@techcorp.es',pass:'1234',name:'Héctor Vargas',role:'Operaciones',created:TODAY},
+      {id:'o9',user:'n.cruz@techcorp.es',pass:'1234',name:'Natalia Cruz',role:'Operaciones',created:TODAY},
+      {id:'o10',user:'m.reyes@techcorp.es',pass:'1234',name:'Marcos Reyes',role:'Operaciones',created:TODAY},
+      // Dirección
+      {id:'d1',user:'r.jimenez.dir@techcorp.es',pass:'1234',name:'Roberto Jiménez',role:'Dirección',created:TODAY},
+      {id:'d2',user:'i.navarro@techcorp.es',pass:'1234',name:'Isabel Navarro',role:'Dirección',created:TODAY},
+      {id:'d3',user:'f.rueda@techcorp.es',pass:'1234',name:'Francisco Rueda',role:'Dirección',created:TODAY},
+      {id:'d4',user:'p.montoya@techcorp.es',pass:'1234',name:'Pilar Montoya',role:'Dirección',created:TODAY},
+      {id:'d5',user:'g.pereira@techcorp.es',pass:'1234',name:'Gonzalo Pereira',role:'Dirección',created:TODAY},
+      {id:'d6',user:'b.alonso@techcorp.es',pass:'1234',name:'Beatriz Alonso',role:'Dirección',created:TODAY},
+      {id:'d7',user:'s.fuentes@techcorp.es',pass:'1234',name:'Sergio Fuentes',role:'Dirección',created:TODAY},
+      {id:'d8',user:'v.lara@techcorp.es',pass:'1234',name:'Verónica Lara',role:'Dirección',created:TODAY},
+      {id:'d9',user:'e.pascual@techcorp.es',pass:'1234',name:'Emilio Pascual',role:'Dirección',created:TODAY},
+      {id:'d10',user:'r.medina@techcorp.es',pass:'1234',name:'Rosa Medina',role:'Dirección',created:TODAY},
+    ];
+    localStorage.setItem('all_users',JSON.stringify(base));
+    return base;
+  }
+  function saveUser(u){const all=JSON.parse(localStorage.getItem('all_users')||'[]');u.id='u'+Date.now();u.created=new Date().toDateString();all.push(u);localStorage.setItem('all_users',JSON.stringify(all));}
 
   const savedTheme=localStorage.getItem('theme')||'light';
   applyTheme(savedTheme);
