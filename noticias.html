@@ -36,7 +36,6 @@
     .urgente-banner { background:#fff7f7; border:1px solid #fecaca; border-radius:var(--radius-lg); padding:14px 20px; display:flex; align-items:center; gap:12px; margin-bottom:20px; }
     .urgente-icon { width:32px; height:32px; background:var(--danger); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 
-    /* ── MODAL ── */
     .modal-overlay {
       display:none; position:fixed; inset:0;
       background:rgba(15,19,34,0.5); backdrop-filter:blur(4px);
@@ -78,10 +77,8 @@
       <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
       <input type="text" placeholder="Buscar noticias...">
     </div>
-    <button class="btn btn-primary btn-sm" onclick="abrirModal()">
-      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 4v12M4 10h12"/></svg>
-      Nueva noticia
-    </button>
+  
+    <div id="topbar-btn-noticias"></div>
   </header>
 
   <div class="content">
@@ -176,7 +173,7 @@
   </div>
 </div>
 
-<!-- ── MODAL NUEVA NOTICIA ── -->
+
 <div class="modal-overlay" id="modal-overlay" onclick="cerrarModalFuera(event)">
   <div class="modal">
     <div class="modal-header">
@@ -225,13 +222,24 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div class="success-toast" id="toast">
   <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="10" r="8"/><path d="M7 10l2 2 4-4"/></svg>
   <span id="toast-msg">¡Noticia publicada!</span>
 </div>
 
 <script>
+
+  const esAdmin = sessionStorage.getItem('userRole') === 'Administrador';
+
+
+  if (esAdmin) {
+    document.getElementById('topbar-btn-noticias').innerHTML = `
+      <button class="btn btn-primary btn-sm" onclick="abrirModal()">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 4v12M4 10h12"/></svg>
+        Nueva noticia
+      </button>`;
+  }
+
   function filterNews(cat, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -242,8 +250,14 @@
   }
 
   function abrirModal() {
+   
+    if (!esAdmin) {
+      alert('No tienes permisos para crear noticias.');
+      return;
+    }
     document.getElementById('modal-overlay').classList.add('open');
   }
+
   function cerrarModal() {
     document.getElementById('modal-overlay').classList.remove('open');
   }
@@ -252,15 +266,17 @@
   }
 
   const catColors = {
-    urgente: { clase: 'nc-urgente', badge: '<span class="badge badge-red">Urgente</span>' },
+    urgente:  { clase: 'nc-urgente',  badge: '<span class="badge badge-red">Urgente</span>' },
     sistemas: { clase: 'nc-sistemas', badge: '<span class="badge badge-blue">Sistemas</span>' },
-    seguridad: { clase: 'nc-seguridad', badge: '<span class="badge badge-yellow">Seguridad</span>' },
-    rrhh: { clase: 'nc-rrhh', badge: '<span class="badge badge-green">RR.HH.</span>' },
-    direccion: { clase: 'nc-direccion', badge: '<span class="badge" style="background:#ede9fe;color:#5b21b6;">Dirección</span>' },
-    general: { clase: 'nc-general', badge: '<span class="badge badge-teal">General</span>' },
+    seguridad:{ clase: 'nc-seguridad',badge: '<span class="badge badge-yellow">Seguridad</span>' },
+    rrhh:     { clase: 'nc-rrhh',     badge: '<span class="badge badge-green">RR.HH.</span>' },
+    direccion:{ clase: 'nc-direccion',badge: '<span class="badge" style="background:#ede9fe;color:#5b21b6;">Dirección</span>' },
+    general:  { clase: 'nc-general',  badge: '<span class="badge badge-teal">General</span>' },
   };
 
   function publicarNoticia() {
+    if (!esAdmin) return; 
+
     const titulo = document.getElementById('n-titulo').value.trim();
     const cat    = document.getElementById('n-cat').value;
     const autor  = document.getElementById('n-autor').value.trim() || sessionStorage.getItem('userName') || 'Anónimo';
@@ -291,7 +307,6 @@
 
     document.getElementById('news-grid').prepend(card);
 
-    // Limpiar y cerrar
     document.getElementById('n-titulo').value = '';
     document.getElementById('n-cat').value = '';
     document.getElementById('n-autor').value = '';

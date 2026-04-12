@@ -67,10 +67,9 @@
       </select>
     </div>
 
-    <!-- Tabs -->
+
     <div class="dept-tabs" id="dept-tabs"></div>
 
-    <!-- Grid -->
     <div class="emp-grid" id="emp-grid"></div>
 
     <div class="empty-state" id="empty" style="display:none;">
@@ -98,11 +97,11 @@
   function getUsers() {
     const s = localStorage.getItem('all_users');
     if (s) return JSON.parse(s);
-    // fallback por si no se ha inicializado aún
+   
     return [];
   }
 
-  // Departamentos que se muestran en el directorio (excluye Administrador)
+
   const DEPTOS = ['Administración','Ventas','Operaciones','Dirección'];
 
   let currentDept = 'todos';
