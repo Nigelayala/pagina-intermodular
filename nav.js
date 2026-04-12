@@ -53,8 +53,8 @@
       <a class="sidebar-logo" href="index.html">
         <div class="logo-icon">IT</div>
         <div class="logo-text">
-          <span class="logo-name">TechCorp S.L.</span>
-          <span class="logo-sub">INTRANET v1.0</span>
+          <span class="logo-name">TecnoSoluciones S.L.</span>
+          <span class="logo-sub">INTRANET · v1.0</span>
         </div>
       </a>
       <nav class="sidebar-nav">
