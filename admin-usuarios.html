@@ -12,50 +12,55 @@
     .admin-search:focus-within { border-color:var(--accent); }
     .admin-search input { border:none; background:transparent; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text-1); outline:none; width:100%; }
     .admin-search input::placeholder { color:var(--text-3); }
+
     .users-table { width:100%; border-collapse:collapse; }
     .users-table th { text-align:left; font-size:11px; font-weight:500; color:var(--text-3); text-transform:uppercase; letter-spacing:.07em; padding:10px 16px; background:var(--surface-2); border-bottom:1px solid var(--border); font-family:'DM Mono',monospace; }
     .users-table td { padding:13px 16px; border-bottom:1px solid var(--border); font-size:14px; vertical-align:middle; }
     .users-table tr:last-child td { border-bottom:none; }
     .users-table tbody tr:hover td { background:var(--surface-2); }
+
     .user-avatar-sm { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:#fff; flex-shrink:0; }
     .user-info-cell { display:flex; align-items:center; gap:12px; }
-    .user-cell-name { font-weight:500; color:var(--text-1); }
+    .user-cell-name { font-weight:500; color:var(--text-1); line-height:1.2; }
     .user-cell-user { font-size:11px; color:var(--text-3); font-family:'DM Mono',monospace; margin-top:2px; }
+
     .action-btns { display:flex; gap:8px; justify-content:flex-end; }
     .btn-icon { width:32px; height:32px; border-radius:8px; border:1px solid var(--border); background:var(--surface); cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-3); transition:all .15s; }
     .btn-icon:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-light); }
     .btn-icon.danger:hover { border-color:var(--danger); color:var(--danger); background:#fee2e2; }
+
     .modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,19,34,0.55); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center; padding:20px; }
     .modal-overlay.open { display:flex; }
     .modal { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px; width:100%; max-width:500px; box-shadow:0 20px 60px rgba(0,0,0,0.2); animation:slideUp .2s ease; }
     @keyframes slideUp { from{transform:translateY(14px);opacity:0} to{transform:translateY(0);opacity:1} }
     .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
-    .modal-title { font-size:17px; font-weight:600; color:var(--text-1); }
-    .modal-close { width:32px; height:32px; border:none; background:var(--surface-2); border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-3); transition:all .15s; }
+    .modal-title  { font-size:17px; font-weight:600; color:var(--text-1); }
+    .modal-close  { width:32px; height:32px; border:none; background:var(--surface-2); border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-3); transition:all .15s; }
     .modal-close:hover { background:var(--surface-3); color:var(--text-1); }
     .modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:22px; }
+
     .delete-modal { max-width:420px; }
-    .delete-icon { width:52px; height:52px; background:#fee2e2; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; }
-    .delete-body { text-align:center; }
+    .delete-icon  { width:52px; height:52px; background:#fee2e2; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; }
+    .delete-body  { text-align:center; }
     .delete-title { font-size:17px; font-weight:600; color:var(--text-1); margin-bottom:8px; }
-    .delete-desc { font-size:14px; color:var(--text-2); line-height:1.6; }
-    .btn-danger { background:var(--danger) !important; color:#fff !important; }
+    .delete-desc  { font-size:14px; color:var(--text-2); line-height:1.6; }
+    .btn-danger   { background:var(--danger) !important; color:#fff !important; }
     .btn-danger:hover { background:#dc2626 !important; }
+
     .form-input-plain { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text-1); background:var(--surface-2); outline:none; transition:border-color .15s; }
     .form-input-plain:focus { border-color:var(--accent); background:var(--surface); box-shadow:0 0 0 3px rgba(79,110,247,0.1); }
     .form-input-plain::placeholder { color:var(--text-3); }
+
     .pass-wrap { position:relative; }
     .pass-wrap input { padding-right:40px; }
     .eye-toggle { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-3); padding:4px; }
+
     .toast { position:fixed; bottom:24px; right:24px; padding:12px 18px; border-radius:12px; font-size:14px; font-weight:500; display:flex; align-items:center; gap:8px; box-shadow:0 4px 16px rgba(0,0,0,0.12); z-index:2000; transform:translateY(80px); opacity:0; transition:all .3s ease; }
     .toast.show { transform:translateY(0); opacity:1; }
-    .toast-ok { background:#dcfce7; border:1px solid #86efac; color:#15803d; }
+    .toast-ok  { background:#dcfce7; border:1px solid #86efac; color:#15803d; }
     .toast-err { background:#fee2e2; border:1px solid #fecaca; color:#991b1b; }
+
     .empty-state { text-align:center; padding:48px; color:var(--text-3); }
-    .acceso-denegado { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:60vh; text-align:center; gap:16px; }
-    .acceso-denegado-icon { width:72px; height:72px; background:#fee2e2; border-radius:50%; display:flex; align-items:center; justify-content:center; }
-    .acceso-denegado h2 { font-size:20px; font-weight:600; color:var(--text-1); }
-    .acceso-denegado p { font-size:14px; color:var(--text-2); max-width:340px; line-height:1.6; }
   </style>
 </head>
 <body>
@@ -68,82 +73,73 @@
       <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
       <input type="text" placeholder="Buscar...">
     </div>
-    <div id="btn-nuevo-wrap"></div>
+    <button id="btn-crear-usuario" class="btn btn-primary btn-sm" onclick="abrirNuevo()">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 4v12M4 10h12"/></svg>
+      Nuevo usuario
+    </button>
   </header>
 
   <div class="content">
-
-
-    <div id="vista-denegado" style="display:none;">
-      <div class="acceso-denegado">
-        <div class="acceso-denegado-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
-        </div>
-        <h2>Acceso restringido</h2>
-        <p>Esta sección es exclusiva para administradores. Si necesitas acceso, contacta con el responsable de IT.</p>
-        <a href="index.html" class="btn btn-primary" style="margin-top:8px;">Volver al inicio</a>
-      </div>
+    <div class="page-header">
+      <h1>Gestión de usuarios</h1>
+      <p>Añade, edita o elimina usuarios de la intranet</p>
     </div>
 
-   
-    <div id="vista-admin" style="display:none;">
-      <div class="page-header">
-        <h1>Gestión de usuarios</h1>
-        <p>Añade, edita o elimina usuarios de la intranet</p>
-      </div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">0</div></div>
-        <div class="stat-card"><div class="stat-label">Administradores</div><div class="stat-value" id="stat-admin">0</div></div>
-        <div class="stat-card"><div class="stat-label">Departamentos</div><div class="stat-value" id="stat-deptos">0</div></div>
-        <div class="stat-card"><div class="stat-label">Nuevos hoy</div><div class="stat-value" id="stat-hoy">0</div></div>
-      </div>
-      <div class="admin-toolbar">
-        <div class="admin-search">
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
-          <input type="text" id="q" placeholder="Buscar por nombre, usuario o rol..." oninput="render()">
-        </div>
-        <select class="form-input" style="width:180px;padding:9px 14px;" id="filtro-rol" onchange="render()">
-          <option value="">Todos los roles</option>
-          <option>Administrador</option>
-          <option>Administración</option>
-          <option>Ventas</option>
-          <option>Operaciones</option>
-          <option>Dirección</option>
-          <option>Soporte IT</option>
-          <option>Empleado</option>
-        </select>
-      </div>
-      <div class="card">
-        <div style="overflow-x:auto;" id="table-wrap">
-          <table class="users-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Usuario / Email</th>
-                <th>Rol</th>
-                <th style="text-align:right;">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tbody"></tbody>
-          </table>
-        </div>
-        <div class="empty-state" id="empty" style="display:none;">
-          <div style="font-size:32px;margin-bottom:8px;">🔍</div>
-          <div class="font-500" style="color:var(--text-2);">No se encontraron usuarios</div>
-        </div>
-      </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">0</div></div>
+      <div class="stat-card"><div class="stat-label">Administradores</div><div class="stat-value" id="stat-admin">0</div></div>
+      <div class="stat-card"><div class="stat-label">Departamentos</div><div class="stat-value" id="stat-deptos">0</div></div>
+      <div class="stat-card"><div class="stat-label">Nuevos hoy</div><div class="stat-value" id="stat-hoy">0</div></div>
     </div>
 
+    <div class="admin-toolbar">
+      <div class="admin-search">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#9298ad" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><path d="M15 15l-3.5-3.5" stroke-linecap="round"/></svg>
+        <input type="text" id="q" placeholder="Buscar por nombre, usuario o rol..." oninput="render()">
+      </div>
+      <select class="form-input" style="width:180px;padding:9px 14px;" id="filtro-rol" onchange="render()">
+        <option value="">Todos los roles</option>
+        <option>Administrador</option>
+        <option>Administración</option>
+        <option>Ventas</option>
+        <option>Operaciones</option>
+        <option>Dirección</option>
+        <option>Soporte IT</option>
+        <option>Empleado</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <div style="overflow-x:auto;" id="table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Usuario / Email</th>
+              <th>Rol</th>
+              <th style="text-align:right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="empty" style="display:none;">
+        <div style="font-size:32px;margin-bottom:8px;">🔍</div>
+        <div class="font-500" style="color:var(--text-2);">No se encontraron usuarios</div>
+      </div>
+    </div>
   </div>
 </div>
-
 
 <div class="modal-overlay" id="modal-form" onclick="if(event.target===this)cerrar('modal-form')">
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title" id="form-title">Nuevo usuario</span>
-      <button class="modal-close" onclick="cerrar('modal-form')"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+      <button class="modal-close" onclick="cerrar('modal-form')">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
     </div>
+
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
       <div class="form-group">
         <label class="form-label">Nombre completo *</label>
@@ -153,15 +149,22 @@
         <label class="form-label">Rol / Departamento *</label>
         <select class="form-input-plain" id="f-role">
           <option value="">Selecciona...</option>
-          <option>Administrador</option><option>Administración</option><option>Ventas</option>
-          <option>Operaciones</option><option>Dirección</option><option>Soporte IT</option><option>Empleado</option>
+          <option>Administrador</option>
+          <option>Administración</option>
+          <option>Ventas</option>
+          <option>Operaciones</option>
+          <option>Dirección</option>
+          <option>Soporte IT</option>
+          <option>Empleado</option>
         </select>
       </div>
     </div>
+
     <div class="form-group">
       <label class="form-label">Usuario (email o alias) *</label>
-      <input class="form-input-plain" type="text" id="f-user" placeholder="l.martinez@tecnosoluciones.es">
+      <input class="form-input-plain" type="text" id="f-user" placeholder="l.martinez@techcorp.es">
     </div>
+
     <div class="form-group">
       <label class="form-label" id="f-pass-label">Contraseña *</label>
       <div class="pass-wrap">
@@ -172,6 +175,7 @@
       </div>
       <div id="pass-hint" style="display:none;font-size:11px;color:var(--text-3);margin-top:4px;font-family:'DM Mono',monospace;">Deja en blanco para mantener la contraseña actual</div>
     </div>
+
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="cerrar('modal-form')">Cancelar</button>
       <button class="btn btn-primary" onclick="guardar()">
@@ -182,7 +186,7 @@
   </div>
 </div>
 
-<!-- MODAL ELIMINAR -->
+
 <div class="modal-overlay" id="modal-del" onclick="if(event.target===this)cerrar('modal-del')">
   <div class="modal delete-modal">
     <div class="delete-body">
@@ -199,100 +203,98 @@
   </div>
 </div>
 
-<div class="toast" id="toast"><span id="toast-msg"></span></div>
+
+<div class="toast" id="toast">
+  <span id="toast-msg"></span>
+</div>
 
 <script>
-
-const userRole = sessionStorage.getItem('userRole');
+  // --- 1. BLOQUE DE SEGURIDAD Y ROLES (El Portero Principal) ---
+  const userRole = sessionStorage.getItem('userRole');
   const isLoggedIn = sessionStorage.getItem('loggedIn');
 
- 
+  // Si no ha iniciado sesión, al login
   if (!isLoggedIn) {
     window.location.href = 'login.html';
   }
-  
+  // Si ha iniciado sesión pero NO es administrador/IT, lo expulsamos
   else if (userRole !== 'Administrador' && userRole !== 'Soporte IT') {
     alert('⛔ Acceso Denegado: No tienes permisos para acceder a la Administración de Usuarios.');
-    window.location.href = 'index.html'; // Lo enviamos a la página de inicio
+    window.location.href = 'index.html'; // Lo enviamos a la página principal
   }
 
+  // Por seguridad extra: Si por algún motivo lograra quedarse en la página, ocultamos el botón
+  document.addEventListener('DOMContentLoaded', () => {
+    if (userRole !== 'Administrador' && userRole !== 'Soporte IT') {
+      const btnCrear = document.getElementById('btn-crear-usuario');
+      if(btnCrear) btnCrear.style.display = 'none';
+    }
+  });
+  // -------------------------------------------------------------
 
   const USERS_KEY = 'all_users';
   const TODAY = new Date().toDateString();
 
-  const USERS_KEY = 'all_users';
-  const TODAY     = new Date().toDateString();
-
-
   function initUsers() {
-    if (localStorage.getItem(USERS_KEY)) return;
-    const base = [
-      {id:'u1', name:'Administrador',   user:'admin',                           pass:'admin123', role:'Administrador',  created:TODAY},
-      {id:'a1', name:'Laura Martínez',  user:'l.martinez@tecnosoluciones.es',   pass:'1234', role:'Administración', created:TODAY},
-      {id:'a2', name:'Carlos Ruiz',     user:'c.ruiz@tecnosoluciones.es',       pass:'1234', role:'Administración', created:TODAY},
-      {id:'a3', name:'Ana García',      user:'a.garcia@tecnosoluciones.es',     pass:'1234', role:'Administración', created:TODAY},
-      {id:'a4', name:'Pedro Soto',      user:'p.soto@tecnosoluciones.es',       pass:'1234', role:'Administración', created:TODAY},
-      {id:'a5', name:'María Iglesias',  user:'m.iglesias@tecnosoluciones.es',   pass:'1234', role:'Administración', created:TODAY},
-      {id:'a6', name:'Jorge Blanco',    user:'j.blanco@tecnosoluciones.es',     pass:'1234', role:'Administración', created:TODAY},
-      {id:'a7', name:'Lucía Vega',      user:'l.vega@tecnosoluciones.es',       pass:'1234', role:'Administración', created:TODAY},
-      {id:'a8', name:'Raúl Molina',     user:'r.molina@tecnosoluciones.es',     pass:'1234', role:'Administración', created:TODAY},
-      {id:'a9', name:'Teresa Campos',   user:'t.campos@tecnosoluciones.es',     pass:'1234', role:'Administración', created:TODAY},
-      {id:'a10',name:'Álvaro Prieto',   user:'a.prieto@tecnosoluciones.es',     pass:'1234', role:'Administración', created:TODAY},
-      {id:'v1', name:'Miguel Torres',   user:'m.torres@tecnosoluciones.es',     pass:'1234', role:'Ventas', created:TODAY},
-      {id:'v2', name:'Sofía López',     user:'s.lopez@tecnosoluciones.es',      pass:'1234', role:'Ventas', created:TODAY},
-      {id:'v3', name:'Pablo Sánchez',   user:'p.sanchez@tecnosoluciones.es',    pass:'1234', role:'Ventas', created:TODAY},
-      {id:'v4', name:'Carmen Delgado',  user:'c.delgado@tecnosoluciones.es',    pass:'1234', role:'Ventas', created:TODAY},
-      {id:'v5', name:'Javier Morales',  user:'j.morales@tecnosoluciones.es',    pass:'1234', role:'Ventas', created:TODAY},
-      {id:'v6', name:'Nuria Castillo',  user:'n.castillo@tecnosoluciones.es',   pass:'1234', role:'Ventas', created:TODAY},
-      {id:'v7', name:'Diego Romero',    user:'d.romero@tecnosoluciones.es',     pass:'1234', role:'Ventas', created:TODAY},
-      {id:'v8', name:'Patricia Gil',    user:'p.gil@tecnosoluciones.es',        pass:'1234', role:'Ventas', created:TODAY},
-      {id:'v9', name:'Andrés Navarro',  user:'a.navarro@tecnosoluciones.es',    pass:'1234', role:'Ventas', created:TODAY},
-      {id:'v10',name:'Cristina Herrera',user:'c.herrera@tecnosoluciones.es',    pass:'1234', role:'Ventas', created:TODAY},
-      {id:'o1', name:'Elena Fernández', user:'e.fernandez@tecnosoluciones.es',  pass:'1234', role:'Operaciones', created:TODAY},
-      {id:'o2', name:'David Moreno',    user:'d.moreno@tecnosoluciones.es',     pass:'1234', role:'Operaciones', created:TODAY},
-      {id:'o3', name:'Isabel Serrano',  user:'i.serrano@tecnosoluciones.es',    pass:'1234', role:'Operaciones', created:TODAY},
-      {id:'o4', name:'Rubén Jiménez',   user:'r.jimenez@tecnosoluciones.es',    pass:'1234', role:'Operaciones', created:TODAY},
-      {id:'o5', name:'Marta Peña',      user:'m.pena@tecnosoluciones.es',       pass:'1234', role:'Operaciones', created:TODAY},
-      {id:'o6', name:'Fernando Ortega', user:'f.ortega@tecnosoluciones.es',     pass:'1234', role:'Operaciones', created:TODAY},
-      {id:'o7', name:'Silvia Ramos',    user:'s.ramos@tecnosoluciones.es',      pass:'1234', role:'Operaciones', created:TODAY},
-      {id:'o8', name:'Héctor Vargas',   user:'h.vargas@tecnosoluciones.es',     pass:'1234', role:'Operaciones', created:TODAY},
-      {id:'o9', name:'Natalia Cruz',    user:'n.cruz@tecnosoluciones.es',       pass:'1234', role:'Operaciones', created:TODAY},
-      {id:'o10',name:'Marcos Reyes',    user:'m.reyes@tecnosoluciones.es',      pass:'1234', role:'Operaciones', created:TODAY},
-      {id:'d1', name:'Roberto Jiménez', user:'r.jimenez.dir@tecnosoluciones.es',pass:'1234', role:'Dirección', created:TODAY},
-      {id:'d2', name:'Isabel Navarro',  user:'i.navarro@tecnosoluciones.es',    pass:'1234', role:'Dirección', created:TODAY},
-      {id:'d3', name:'Francisco Rueda', user:'f.rueda@tecnosoluciones.es',      pass:'1234', role:'Dirección', created:TODAY},
-      {id:'d4', name:'Pilar Montoya',   user:'p.montoya@tecnosoluciones.es',    pass:'1234', role:'Dirección', created:TODAY},
-      {id:'d5', name:'Gonzalo Pereira', user:'g.pereira@tecnosoluciones.es',    pass:'1234', role:'Dirección', created:TODAY},
-      {id:'d6', name:'Beatriz Alonso',  user:'b.alonso@tecnosoluciones.es',     pass:'1234', role:'Dirección', created:TODAY},
-      {id:'d7', name:'Sergio Fuentes',  user:'s.fuentes@tecnosoluciones.es',    pass:'1234', role:'Dirección', created:TODAY},
-      {id:'d8', name:'Verónica Lara',   user:'v.lara@tecnosoluciones.es',       pass:'1234', role:'Dirección', created:TODAY},
-      {id:'d9', name:'Emilio Pascual',  user:'e.pascual@tecnosoluciones.es',    pass:'1234', role:'Dirección', created:TODAY},
-      {id:'d10',name:'Rosa Medina',     user:'r.medina@tecnosoluciones.es',     pass:'1234', role:'Dirección', created:TODAY},
-    ];
-    localStorage.setItem(USERS_KEY, JSON.stringify(base));
+    if (!localStorage.getItem(USERS_KEY)) {
+      const base = [
+        // Administrador
+        { id:'u1',  name:'Administrador',      user:'admin',                    pass:'admin123', role:'Administrador',  created: TODAY },
+
+        // Administración (10)
+        { id:'a1',  name:'Laura Martínez',      user:'l.martinez@technosoluciones.es.es',   pass:'1234', role:'Administración', created: TODAY },
+        { id:'a2',  name:'Carlos Ruiz',          user:'c.ruiz@technosoluciones.es.es',       pass:'1234', role:'Administración', created: TODAY },
+        { id:'a3',  name:'Ana García',           user:'a.garcia@technosoluciones.es.es',     pass:'1234', role:'Administración', created: TODAY },
+        { id:'a4',  name:'Pedro Soto',           user:'p.soto@technosoluciones.es.es',       pass:'1234', role:'Administración', created: TODAY },
+        { id:'a5',  name:'María Iglesias',       user:'m.iglesias@technosoluciones.es.es',   pass:'1234', role:'Administración', created: TODAY },
+        { id:'a6',  name:'Jorge Blanco',         user:'j.blanco@technosoluciones.es.es',     pass:'1234', role:'Administración', created: TODAY },
+        { id:'a7',  name:'Lucía Vega',           user:'l.vega@technosoluciones.es.es',       pass:'1234', role:'Administración', created: TODAY },
+        { id:'a8',  name:'Raúl Molina',          user:'r.molina@technosoluciones.es.es',     pass:'1234', role:'Administración', created: TODAY },
+        { id:'a9',  name:'Teresa Campos',        user:'t.campos@technosoluciones.es.es',     pass:'1234', role:'Administración', created: TODAY },
+        { id:'a10', name:'Álvaro Prieto',        user:'a.prieto@technosoluciones.es.es',     pass:'1234', role:'Administración', created: TODAY },
+
+        // Ventas (10)
+        { id:'v1',  name:'Miguel Torres',        user:'m.torres@technosoluciones.es.es',     pass:'1234', role:'Ventas', created: TODAY },
+        { id:'v2',  name:'Sofía López',          user:'s.lopez@technosoluciones.es.es',      pass:'1234', role:'Ventas', created: TODAY },
+        { id:'v3',  name:'Pablo Sánchez',        user:'p.sanchez@technosoluciones.es.es',    pass:'1234', role:'Ventas', created: TODAY },
+        { id:'v4',  name:'Carmen Delgado',       user:'c.delgado@technosoluciones.es.es',    pass:'1234', role:'Ventas', created: TODAY },
+        { id:'v5',  name:'Javier Morales',       user:'j.morales@technosoluciones.es.es',    pass:'1234', role:'Ventas', created: TODAY },
+        { id:'v6',  name:'Nuria Castillo',       user:'n.castillo@technosoluciones.es.es',   pass:'1234', role:'Ventas', created: TODAY },
+        { id:'v7',  name:'Diego Romero',         user:'d.romero@technosoluciones.es.es',     pass:'1234', role:'Ventas', created: TODAY },
+        { id:'v8',  name:'Patricia Gil',         user:'p.gil@technosoluciones.es.es',        pass:'1234', role:'Ventas', created: TODAY },
+        { id:'v9',  name:'Andrés Navarro',       user:'a.navarro@technosoluciones.es.es',    pass:'1234', role:'Ventas', created: TODAY },
+        { id:'v10', name:'Cristina Herrera',     user:'c.herrera@technosoluciones.es.es',    pass:'1234', role:'Ventas', created: TODAY },
+
+        // Operaciones (10)
+        { id:'o1',  name:'Elena Fernández',      user:'e.fernandez@technosoluciones.es.es',  pass:'1234', role:'Operaciones', created: TODAY },
+        { id:'o2',  name:'David Moreno',         user:'d.moreno@technosoluciones.es.es',     pass:'1234', role:'Operaciones', created: TODAY },
+        { id:'o3',  name:'Isabel Serrano',       user:'i.serrano@technosoluciones.es.es',    pass:'1234', role:'Operaciones', created: TODAY },
+        { id:'o4',  name:'Rubén Jiménez',        user:'r.jimenez@technosoluciones.es.es',    pass:'1234', role:'Operaciones', created: TODAY },
+        { id:'o5',  name:'Marta Peña',           user:'m.pena@technosoluciones.es.es',       pass:'1234', role:'Operaciones', created: TODAY },
+        { id:'o6',  name:'Fernando Ortega',      user:'f.ortega@technosoluciones.es.es',     pass:'1234', role:'Operaciones', created: TODAY },
+        { id:'o7',  name:'Silvia Ramos',         user:'s.ramos@technosoluciones.es.es',      pass:'1234', role:'Operaciones', created: TODAY },
+        { id:'o8',  name:'Héctor Vargas',        user:'h.vargas@technosoluciones.es.es',     pass:'1234', role:'Operaciones', created: TODAY },
+        { id:'o9',  name:'Natalia Cruz',         user:'n.cruz@technosoluciones.es.es',       pass:'1234', role:'Operaciones', created: TODAY },
+        { id:'o10', name:'Marcos Reyes',         user:'m.reyes@technosoluciones.es.es',      pass:'1234', role:'Operaciones', created: TODAY },
+
+        // Dirección (10)
+        { id:'d1',  name:'Roberto Jiménez',      user:'r.jimenez.dir@technosoluciones.es',pass:'1234', role:'Dirección', created: TODAY },
+        { id:'d2',  name:'Isabel Navarro',       user:'i.navarro@technosoluciones.es.es',    pass:'1234', role:'Dirección', created: TODAY },
+        { id:'d3',  name:'Francisco Rueda',      user:'f.rueda@technosoluciones.es.es',      pass:'1234', role:'Dirección', created: TODAY },
+        { id:'d4',  name:'Pilar Montoya',        user:'p.montoya@technosoluciones.es.es',    pass:'1234', role:'Dirección', created: TODAY },
+        { id:'d5',  name:'Gonzalo Pereira',      user:'g.pereira@technosoluciones.es.es',    pass:'1234', role:'Dirección', created: TODAY },
+        { id:'d6',  name:'Beatriz Alonso',       user:'b.alonso@technosoluciones.es.es',     pass:'1234', role:'Dirección', created: TODAY },
+        { id:'d7',  name:'Sergio Fuentes',       user:'s.fuentes@technosoluciones.es.es',    pass:'1234', role:'Dirección', created: TODAY },
+        { id:'d8',  name:'Verónica Lara',        user:'v.lara@technosoluciones.es.es',       pass:'1234', role:'Dirección', created: TODAY },
+        { id:'d9',  name:'Emilio Pascual',       user:'e.pascual@technosoluciones.es.es',    pass:'1234', role:'Dirección', created: TODAY },
+        { id:'d10', name:'Rosa Medina',          user:'r.medina@technosoluciones.es.es',     pass:'1234', role:'Dirección', created: TODAY },
+      ];
+      localStorage.setItem(USERS_KEY, JSON.stringify(base));
+    }
   }
 
-  function getUsers()     { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); }
-  function saveUsers(arr) { localStorage.setItem(USERS_KEY, JSON.stringify(arr)); }
-
-
-  initUsers();
-
-  const esAdmin = sessionStorage.getItem('userRole') === 'Administrador';
-
-  if (esAdmin) {
-    document.getElementById('vista-admin').style.display    = '';
-    document.getElementById('vista-denegado').style.display = 'none';
-    document.getElementById('btn-nuevo-wrap').innerHTML = `
-      <button class="btn btn-primary btn-sm" onclick="abrirNuevo()">
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 4v12M4 10h12"/></svg>
-        Nuevo usuario
-      </button>`;
-    render();
-  } else {
-    document.getElementById('vista-denegado').style.display = '';
-    document.getElementById('vista-admin').style.display    = 'none';
-  }
+  function getUsers()      { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); }
+  function saveUsers(arr)  { localStorage.setItem(USERS_KEY, JSON.stringify(arr)); }
 
 
   const COLORS = ['#4f6ef7','#22c55e','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#db2777','#0e7490'];
@@ -301,48 +303,58 @@ const userRole = sessionStorage.getItem('userRole');
     for (const c of name) h = (h * 31 + c.charCodeAt(0)) & 0xffffffff;
     return COLORS[Math.abs(h) % COLORS.length];
   }
+
   const ROLE_BADGE = {
-    'Administrador':'badge-red','Administración':'badge-blue','Ventas':'badge-green',
-    'Operaciones':'badge-teal','Dirección':'badge-gray','Soporte IT':'badge-yellow','Empleado':'badge-gray'
+    'Administrador': 'badge-red',
+    'Administración': 'badge-blue',
+    'Ventas': 'badge-green',
+    'Operaciones': 'badge-teal',
+    'Dirección': 'badge-gray',
+    'Soporte IT': 'badge-yellow',
+    'Empleado': 'badge-gray',
   };
 
 
   function render() {
-    const q   = document.getElementById('q').value.toLowerCase();
-    const rol = document.getElementById('filtro-rol').value;
-    const all = getUsers();
+    const q    = document.getElementById('q').value.toLowerCase();
+    const rol  = document.getElementById('filtro-rol').value;
+    const all  = getUsers();
 
     const filtered = all.filter(u => {
-      const mQ = !q   || u.name.toLowerCase().includes(q) || (u.user||'').toLowerCase().includes(q) || u.role.toLowerCase().includes(q);
-      const mR = !rol || u.role === rol;
-      return mQ && mR;
+      const matchQ   = !q   || u.name.toLowerCase().includes(q) || u.user.toLowerCase().includes(q) || u.role.toLowerCase().includes(q);
+      const matchRol = !rol || u.role === rol;
+      return matchQ && matchRol;
     });
 
     const tbody = document.getElementById('tbody');
     tbody.innerHTML = '';
-    document.getElementById('empty').style.display      = filtered.length ? 'none' : '';
-    document.getElementById('table-wrap').style.display = filtered.length ? ''     : 'none';
+
+    document.getElementById('empty').style.display      = filtered.length === 0 ? '' : 'none';
+    document.getElementById('table-wrap').style.display = filtered.length === 0 ? 'none' : '';
 
     filtered.forEach(u => {
-      const ini   = u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-      const color = avatarColor(u.name);
-      const badge = ROLE_BADGE[u.role] || 'badge-gray';
-      const tr    = document.createElement('tr');
+      const initials = u.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      const color    = avatarColor(u.name);
+      const badge    = ROLE_BADGE[u.role] || 'badge-gray';
+
+      const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>
           <div class="user-info-cell">
-            <div class="user-avatar-sm" style="background:${color}">${ini}</div>
-            <div class="user-cell-name">${u.name}</div>
+            <div class="user-avatar-sm" style="background:${color}">${initials}</div>
+            <div>
+              <div class="user-cell-name">${u.name}</div>
+            </div>
           </div>
         </td>
-        <td><span class="user-cell-user">${u.user||''}</span></td>
+        <td><span class="user-cell-user">${u.user}</span></td>
         <td><span class="badge ${badge}">${u.role}</span></td>
         <td>
           <div class="action-btns">
-            <button class="btn-icon" onclick="abrirEditar('${u.id}')">
+            <button class="btn-icon" title="Editar" onclick="abrirEditar('${u.id}')">
               <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 3l4 4-9 9H4v-4l9-9z"/></svg>
             </button>
-            <button class="btn-icon danger" onclick="abrirEliminar('${u.id}')">
+            <button class="btn-icon danger" title="Eliminar" onclick="abrirEliminar('${u.id}')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
             </button>
           </div>
@@ -350,74 +362,103 @@ const userRole = sessionStorage.getItem('userRole');
       tbody.appendChild(tr);
     });
 
-    document.getElementById('stat-total').textContent  = all.length;
-    document.getElementById('stat-admin').textContent  = all.filter(u=>u.role==='Administrador').length;
-    document.getElementById('stat-deptos').textContent = new Set(all.map(u=>u.role)).size;
-    document.getElementById('stat-hoy').textContent    = all.filter(u=>u.created===TODAY).length;
-  }
 
+    document.getElementById('stat-total').textContent  = all.length;
+    document.getElementById('stat-admin').textContent  = all.filter(u => u.role === 'Administrador').length;
+    document.getElementById('stat-deptos').textContent = new Set(all.map(u => u.role)).size;
+    document.getElementById('stat-hoy').textContent    = all.filter(u => u.created === TODAY).length;
+  }
 
   let editingId = null;
 
   function abrirNuevo() {
+    // --- 2. EL PORTERO SECUNDARIO (Bloquea la función interna) ---
+    const miRol = sessionStorage.getItem('userRole');
+    if (miRol !== 'Administrador' && miRol !== 'Soporte IT') {
+      alert("⛔ Acceso denegado: Solo los administradores pueden crear usuarios.");
+      return; 
+    }
+    // -------------------------------------------------------------
+    
     editingId = null;
-    document.getElementById('form-title').textContent      = '➕ Nuevo usuario';
+    document.getElementById('form-title').textContent    = '➕ Nuevo usuario';
     document.getElementById('btn-guardar-txt').textContent = 'Crear usuario';
-    ['f-name','f-user','f-pass'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('f-role').value             = '';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-user').value = '';
+    document.getElementById('f-pass').value = '';
+    document.getElementById('f-role').value = '';
     document.getElementById('f-pass-label').textContent = 'Contraseña *';
-    document.getElementById('pass-hint').style.display  = 'none';
+    document.getElementById('pass-hint').style.display = 'none';
     document.getElementById('modal-form').classList.add('open');
-    setTimeout(()=>document.getElementById('f-name').focus(),100);
+    setTimeout(() => document.getElementById('f-name').focus(), 100);
   }
 
+
   function abrirEditar(id) {
-    const u = getUsers().find(x=>x.id===id);
+    const u = getUsers().find(x => x.id === id);
     if (!u) return;
     editingId = id;
-    document.getElementById('form-title').textContent      = '✏️ Editar usuario';
+    document.getElementById('form-title').textContent    = '✏️ Editar usuario';
     document.getElementById('btn-guardar-txt').textContent = 'Guardar cambios';
-    document.getElementById('f-name').value              = u.name;
-    document.getElementById('f-user').value              = u.user;
-    document.getElementById('f-pass').value              = '';
-    document.getElementById('f-role').value              = u.role;
-    document.getElementById('f-pass-label').textContent  = 'Contraseña';
-    document.getElementById('pass-hint').style.display   = '';
+    document.getElementById('f-name').value = u.name;
+    document.getElementById('f-user').value = u.user;
+    document.getElementById('f-pass').value = '';
+    document.getElementById('f-role').value = u.role;
+    document.getElementById('f-pass-label').textContent = 'Contraseña';
+    document.getElementById('pass-hint').style.display = '';
     document.getElementById('modal-form').classList.add('open');
-    setTimeout(()=>document.getElementById('f-name').focus(),100);
+    setTimeout(() => document.getElementById('f-name').focus(), 100);
   }
+
 
   function guardar() {
     const name = document.getElementById('f-name').value.trim();
     const user = document.getElementById('f-user').value.trim();
     const pass = document.getElementById('f-pass').value;
     const role = document.getElementById('f-role').value;
-    if (!name||!user||!role)     { toast('Rellena nombre, usuario y rol.',true); return; }
-    if (!editingId&&!pass)       { toast('La contraseña es obligatoria.',true); return; }
-    if (pass&&pass.length<4)     { toast('Mínimo 4 caracteres en la contraseña.',true); return; }
+
+    if (!name || !user || !role)      { toast('Rellena nombre, usuario y rol.', true); return; }
+    if (!editingId && !pass)          { toast('La contraseña es obligatoria.', true); return; }
+    if (pass && pass.length < 4)      { toast('La contraseña debe tener al menos 4 caracteres.', true); return; }
+
     const all = getUsers();
+
     if (editingId) {
-      const idx = all.findIndex(x=>x.id===editingId);
-      if (idx===-1) { toast('Usuario no encontrado.',true); return; }
-      if (all.find(x=>x.user===user&&x.id!==editingId)) { toast('Ya existe otro usuario con ese alias.',true); return; }
-      all[idx] = {...all[idx], name, user, role, ...(pass?{pass}:{})};
-      saveUsers(all); toast('✅ Usuario actualizado correctamente.');
+      const idx = all.findIndex(x => x.id === editingId);
+      if (idx === -1) { toast('Usuario no encontrado.', true); return; }
+      
+      if (all.find(x => x.user === user && x.id !== editingId)) { toast('Ya existe otro usuario con ese alias.', true); return; }
+      all[idx].name = name;
+      all[idx].user = user;
+      all[idx].role = role;
+      if (pass) all[idx].pass = pass;
+      saveUsers(all);
+      toast('✅ Usuario actualizado correctamente.');
     } else {
-      if (all.find(x=>x.user===user)) { toast('Ya existe un usuario con ese alias.',true); return; }
-      all.push({id:'u'+Date.now(), name, user, pass, role, created:TODAY});
-      saveUsers(all); toast('✅ Usuario "'+name+'" creado.');
+      if (all.find(x => x.user === user)) { toast('Ya existe un usuario con ese alias.', true); return; }
+      all.push({ id: 'u' + Date.now(), name, user, pass, role, created: TODAY });
+      saveUsers(all);
+      toast('✅ Usuario "' + name + '" creado.');
     }
-    cerrar('modal-form'); render();
+
+    cerrar('modal-form');
+    render();
   }
+
 
   let deletingId = null;
 
   function abrirEliminar(id) {
-    const u = getUsers().find(x=>x.id===id);
+    const u = getUsers().find(x => x.id === id);
     if (!u) return;
-    if (u.role==='Administrador' && getUsers().filter(x=>x.role==='Administrador').length===1) {
-      toast('No puedes eliminar el único administrador.',true); return;
+
+    // Proteger: no dejar sin ningún administrador
+    const admins = getUsers().filter(x => x.role === 'Administrador');
+    if (u.role === 'Administrador' && admins.length === 1) {
+      toast('No puedes eliminar el único administrador del sistema.', true);
+      return;
     }
+
     deletingId = id;
     document.getElementById('del-desc').innerHTML =
       `Vas a eliminar a <strong>${u.name}</strong> (${u.user}).<br>Esta acción no se puede deshacer.`;
@@ -426,34 +467,41 @@ const userRole = sessionStorage.getItem('userRole');
 
   function eliminar() {
     if (!deletingId) return;
-    const all  = getUsers();
-    const user = all.find(x=>x.id===deletingId);
-    saveUsers(all.filter(x=>x.id!==deletingId));
+    const all     = getUsers();
+    const usuario = all.find(x => x.id === deletingId);
+    const nuevos  = all.filter(x => x.id !== deletingId);
+    saveUsers(nuevos);
     cerrar('modal-del');
-    toast('🗑️ Usuario "'+(user?user.name:'')+'" eliminado.');
-    deletingId = null; render();
+    toast('🗑️ Usuario "' + (usuario ? usuario.name : '') + '" eliminado.');
+    deletingId = null;
+    render();
   }
+
 
   function cerrar(id) { document.getElementById(id).classList.remove('open'); }
 
   function toggleEye() {
     const inp = document.getElementById('f-pass');
-    inp.type = inp.type==='password' ? 'text' : 'password';
-    document.getElementById('eye-svg').style.opacity = inp.type==='text' ? '.4' : '1';
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    document.getElementById('eye-svg').style.opacity = inp.type === 'text' ? '.4' : '1';
   }
 
-  function toast(msg, isErr=false) {
+  function toast(msg, isErr = false) {
     const el = document.getElementById('toast');
     document.getElementById('toast-msg').textContent = msg;
-    el.className = 'toast '+(isErr?'toast-err':'toast-ok');
+    el.className = 'toast ' + (isErr ? 'toast-err' : 'toast-ok');
     el.classList.add('show');
-    setTimeout(()=>el.classList.remove('show'),3500);
+    setTimeout(() => el.classList.remove('show'), 3500);
   }
 
   document.addEventListener('keydown', e => {
-    if (e.key==='Escape') { cerrar('modal-form'); cerrar('modal-del'); }
-    if (e.key==='Enter' && document.getElementById('modal-form').classList.contains('open')) guardar();
+    if (e.key === 'Escape') { cerrar('modal-form'); cerrar('modal-del'); }
+    if (e.key === 'Enter' && document.getElementById('modal-form').classList.contains('open')) guardar();
   });
+
+  // ── INIT ──────────────────────────────────────────────
+  initUsers();
+  render();
 </script>
 </body>
 </html>
